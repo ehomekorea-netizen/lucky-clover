@@ -190,7 +190,7 @@
   <main class="app-frame w-full h-screen sm:h-[780px] bg-slate-50 flex flex-col justify-between relative overflow-hidden transition-all duration-500 app-card" id="main-app" style="opacity: 0;">
     
     <!-- App Header Ribbon -->
-    <header class="px-4 py-4.5 bg-white border-b border-brand-border flex flex-col items-center justify-center relative z-10 shrink-0">
+    <header class="px-4 py-4 bg-white border-b border-brand-border flex flex-col items-center justify-center relative z-10 shrink-0">
       <div class="flex flex-col items-center gap-1 text-center">
         <div>
           <h2 class="font-noto font-black text-[20px] tracking-tight text-slate-800 leading-none">🍀 럭키클로버</h2>
@@ -198,8 +198,8 @@
         </div>
       </div>
 
-      <!-- Sound toggle simple badge (Absolute Right position) -->
-      <button id="sound-toggle" class="btn-tap w-7 h-7 rounded-lg border border-brand-border bg-brand-light text-slate-400 flex items-center justify-center text-xs absolute right-4 top-5">
+      <!-- Sound toggle simple badge (Absolute Right position - 수직 중앙 정렬 보정) -->
+      <button id="sound-toggle" class="btn-tap w-7 h-7 rounded-lg border border-brand-border bg-brand-light text-slate-400 flex items-center justify-center text-xs absolute right-4 top-1/2 -translate-y-1/2">
         <i class="fa-solid fa-volume-high text-brand-green" id="sound-icon"></i>
       </button>
     </header>
@@ -552,6 +552,7 @@
     let inventory = [];
     let html5QrcodeScanner = null; // Scanner handle
     let lastValidatedCombination = '';
+    let expandedDraws = {};
 
     function loadInventoryFromStorage() {
       const stored = localStorage.getItem('lucky_clover_inventory');
@@ -857,6 +858,8 @@
         checkerMiddleToast.classList.add('h-14', 'py-2', 'px-3', 'text-[11px]', 'bg-rose-50', 'border', 'border-rose-200', 'text-rose-500', 'font-bold');
       } else if (type === '2nd') {
         checkerMiddleToast.classList.add('h-14', 'py-2', 'px-3', 'text-[11px]', 'bg-orange-50', 'border', 'border-orange-200', 'text-orange-500', 'font-bold');
+      } else if (type === 'error') {
+        checkerMiddleToast.classList.add('h-8', 'py-1', 'px-3', 'text-[11px]', 'bg-rose-50', 'border', 'border-rose-200', 'text-rose-500', 'font-bold');
       } else if (type === 'clean') {
         checkerMiddleToast.classList.add('h-8', 'py-1', 'px-3', 'text-[11px]', 'bg-brand-sage', 'border', 'border-brand-green/20', 'text-brand-darkgreen', 'font-bold');
       } else {
@@ -898,7 +901,7 @@
         // 없으면 추가
         if (selectedNumbers.length >= 6) {
           playChiptune(200, 0.15); // 한계 에러음
-          showInlineToast("번호는 6개까지만 선택할 수 있어요!");
+          showInlineToast("번호는 6개까지만 선택할 수 있어요!", 1200, 'error');
           return;
         }
         
@@ -1119,63 +1122,29 @@
         manualSelectedNumbers = [];
       }
 
-      let attempts = 0;
-      let cleanCombination = [];
-      // 사용자가 직접 고정한 번호들만 고정 기반(Base)으로 둔다
       const baseNumbers = [...manualSelectedNumbers]; 
       const isSemiAuto = baseNumbers.length > 0;
       
-      // 안전 100% 청정 조합이 나타날 때까지 무한 재루프 연산 (안전장치 10,000회)
-      while (attempts < 10000) {
-        attempts++;
-        const testComb = [...baseNumbers];
-        
-        // 비어있는 나머지 슬롯 개수만큼 중복되지 않는 난수 추가
-        const pool = Array.from({ length: 45 }, (_, i) => i + 1).filter(n => !testComb.includes(n));
-        const needCount = 6 - testComb.length;
-        
-        for (let i = 0; i < needCount; i++) {
-          if (pool.length === 0) break;
-          const rIdx = Math.floor(Math.random() * pool.length);
-          testComb.push(pool.splice(rIdx, 1)[0]);
-        }
-        testComb.sort((a, b) => a - b);
-        
-        // 1등 및 2등 이력과 대조
-        const { matched1st, matched2nd } = checkCombinationContamination(testComb);
-        
-        // 단 하나도 매치되지 않았다면 완벽한 청정 조합 완성!
-        if (!matched1st && !matched2nd) {
-          cleanCombination = testComb;
-          break;
-        }
+      const testComb = [...baseNumbers];
+      // 중복 없는 무작위 번호 풀 구성
+      const pool = Array.from({ length: 45 }, (_, i) => i + 1).filter(n => !testComb.includes(n));
+      const needCount = 6 - testComb.length;
+      
+      for (let i = 0; i < needCount; i++) {
+        if (pool.length === 0) break;
+        const rIdx = Math.floor(Math.random() * pool.length);
+        testComb.push(pool.splice(rIdx, 1)[0]);
       }
+      testComb.sort((a, b) => a - b);
 
-      if (cleanCombination.length === 6) {
-        selectedNumbers = cleanCombination;
-        playBubblePop();
-        updateCheckerUI();
-        if (isSemiAuto) {
-          showNotification("수동 번호를 고정하고 남은 번호를 청정 번호로 채웠어요! 🍀");
-        } else {
-          showNotification("100% 안전한 청정 번호만 쏙 골라 새로 뽑았어요! 🍀");
-        }
+      selectedNumbers = testComb;
+      playBubblePop();
+      updateCheckerUI();
+
+      if (isSemiAuto) {
+        showNotification("수동 번호를 고정하고 남은 번호를 랜덤으로 채웠어요! 🍀");
       } else {
-        if (isSemiAuto) {
-          showNotification("수동 번호 간섭으로 청정 생성이 어려워요. 번호를 조금 수정해 주세요!");
-          playDefeatChime();
-        } else {
-          // 백업 무작위 추출
-          showNotification("청정 번호 연산 한계 초과로 기본 자동 선택을 진행해요.");
-          const pool = Array.from({ length: 45 }, (_, i) => i + 1);
-          const backup = [];
-          for (let i = 0; i < 6; i++) {
-            const rIdx = Math.floor(Math.random() * pool.length);
-            backup.push(pool.splice(rIdx, 1)[0]);
-          }
-          selectedNumbers = backup.sort((a,b)=>a-b);
-          updateCheckerUI();
-        }
+        showNotification("번호판에 무작위 번호 조합을 새로 채웠어요! 🍀");
       }
     });
 
@@ -1459,6 +1428,44 @@
         `;
       });
 
+      // 당첨금 정보 렌더링
+      let prizeHTML = '';
+      if (record.divisions && Array.isArray(record.divisions)) {
+        const validDivs = record.divisions.filter(d => d && d.prize !== undefined && d.prize > 0);
+        if (validDivs.length >= 2) {
+          const firstPrize = validDivs[0].prize;
+          const firstWinners = validDivs[0].winners || 0;
+          const secondPrize = validDivs[1].prize;
+          const secondWinners = validDivs[1].winners || 0;
+
+          prizeHTML = `
+            <div class="flex flex-col gap-2.5 mt-1">
+              <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span class="text-sm font-bold text-slate-800 font-noto">제 ${record.draw_no}회차 등수별 당첨금 (1게임당)</span>
+              </div>
+              <div class="bg-white border border-brand-border rounded-2xl p-3.5 flex flex-col gap-2.5 shadow-sm text-xs font-noto">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                    <span class="font-bold text-slate-800">1등 당첨금</span>
+                    <span class="text-[10px] text-slate-400 font-normal">(${firstWinners}명)</span>
+                  </div>
+                  <span class="font-mono font-bold text-rose-500 text-[13px]">${firstPrize.toLocaleString('ko-KR')}원</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                    <span class="font-bold text-slate-800">2등 당첨금</span>
+                    <span class="text-[10px] text-slate-400 font-normal">(${secondWinners}명)</span>
+                  </div>
+                  <span class="font-mono font-bold text-orange-500 text-[13px]">${secondPrize.toLocaleString('ko-KR')}원</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
       searchResultDisplay.innerHTML = `
         <div class="flex flex-col gap-4.5 text-left animate-fadeIn">
           <div class="flex justify-between items-center border-b border-slate-200 pb-2">
@@ -1485,6 +1492,9 @@
               ${storesHTML}
             </div>
           </div>
+
+          <!-- 당첨금 안내 -->
+          ${prizeHTML}
         </div>
       `;
     }
