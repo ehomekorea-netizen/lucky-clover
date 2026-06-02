@@ -969,8 +969,16 @@
           for (let j = 0; j < 12; j += 2) {
             nums.push(parseInt(gameStr.substr(j, 2)));
           }
-          nums.sort((a, b) => a - b);
-          parsedGames.push(nums);
+          
+          // 1. 중복 없는 고유 6개 번호인지 검사
+          const isUnique = new Set(nums).size === 6;
+          // 2. 모든 번호가 로또 유효 범위(1~45) 내에 있는지 검사
+          const isValidRange = nums.every(num => num >= 1 && num <= 45);
+
+          if (isUnique && isValidRange) {
+            nums.sort((a, b) => a - b);
+            parsedGames.push(nums);
+          }
         });
 
         if (parsedGames.length === 0) {
