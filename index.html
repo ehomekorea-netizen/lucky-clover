@@ -1717,6 +1717,28 @@
       renderInventoryList();
     }
 
+    function checkSavedDrawWinning(comb, drawNo) {
+      const currentActiveDraw = getCurrentDrawNo();
+      if (drawNo >= currentActiveDraw) {
+        return { status: 'active' }; // 진행 중인 회차
+      }
+      
+      const record = lottoHistory.find(h => h.draw_no === drawNo);
+      if (!record) {
+        return { status: 'pending' }; // 결과 동기화 대기 중
+      }
+      
+      const matchCount = record.numbers.filter(n => comb.includes(n)).length;
+      const hasBonus = comb.includes(record.bonus_no);
+      
+      if (matchCount === 6) return { status: 'win', rank: 1 };
+      if (matchCount === 5 && hasBonus) return { status: 'win', rank: 2 };
+      if (matchCount === 5) return { status: 'win', rank: 3 };
+      if (matchCount === 4) return { status: 'win', rank: 4 };
+      if (matchCount === 3) return { status: 'win', rank: 5 };
+      return { status: 'lose' };
+    }
+
     function renderInventoryList(scrollToBottom = false) {
       const stored = localStorage.getItem('lucky_clover_inventory');
       inventory = stored ? JSON.parse(stored) : [];
@@ -1761,10 +1783,14 @@
         // 아코디언 헤더
         const header = document.createElement('div');
         header.className = 'flex justify-between items-center py-2.5 px-3 bg-white rounded-xl shadow-sm cursor-pointer transition hover:bg-slate-50 btn-tap';
+        
+        const isDrawCompleted = drawNo < getCurrentDrawNo();
+        const titleLabel = isDrawCompleted ? `제 ${drawNo}회차 추첨 결과` : `제 ${drawNo}회차 보관 기록`;
+
         header.innerHTML = `
           <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
-            <span class="text-xs font-bold text-slate-700 font-noto">제 ${drawNo}회차 보관 기록</span>
+            <span class="w-1.5 h-1.5 rounded-full ${isDrawCompleted ? 'bg-rose-400' : 'bg-brand-green'}"></span>
+            <span class="text-xs font-bold text-slate-700 font-noto">${titleLabel}</span>
             <span class="px-1.5 py-0.5 rounded-full text-[8.5px] font-bold bg-brand-sage text-brand-darkgreen font-mono">${groupItems.length}</span>
           </div>
           <div class="text-slate-400 text-xs">
@@ -1790,15 +1816,32 @@
 
         groupItems.forEach(item => {
           const { comb, originalIndex } = item;
-          const { matched1st, matched2nd } = checkCombinationContamination(comb);
-
+          
           let badgeHTML = '';
-          if (matched1st) {
-            badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-rose-100 text-rose-500 font-noto">1등 이력</span>`;
-          } else if (matched2nd) {
-            badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-orange-100 text-orange-500 font-noto">2등 이력</span>`;
+          const currentActiveDraw = getCurrentDrawNo();
+
+          if (drawNo < currentActiveDraw) {
+            // 과거 회차: 실제 추첨 결과 채점
+            const winInfo = checkSavedDrawWinning(comb, drawNo);
+            if (winInfo.status === 'win') {
+              if (winInfo.rank === 1) badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-rose-500 text-white font-noto animate-pulse">🎉 1등 당첨!</span>`;
+              else if (winInfo.rank === 2) badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-orange-500 text-white font-noto">🌟 2등 당첨!</span>`;
+              else if (winInfo.rank === 3) badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-amber-400 text-slate-800 font-noto">✨ 3등 당첨!</span>`;
+              else if (winInfo.rank === 4) badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-emerald-500 text-white font-noto">4등 당첨</span>`;
+              else if (winInfo.rank === 5) badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-blue-500 text-white font-noto">5등 당첨</span>`;
+            } else if (winInfo.status === 'lose') {
+              badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-slate-100 text-slate-400 font-noto">낙첨</span>`;
+            } else if (winInfo.status === 'pending') {
+              badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-amber-50 text-amber-600 border border-amber-200/50 font-noto">결과 대기</span>`;
+            }
           } else {
-            badgeHTML = '';
+            // 현재 회차: 오염도 사전 검사 (1등/2등 이력 경고)
+            const { matched1st, matched2nd } = checkCombinationContamination(comb);
+            if (matched1st) {
+              badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-rose-100 text-rose-500 font-noto">1등 이력</span>`;
+            } else if (matched2nd) {
+              badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-orange-100 text-orange-500 font-noto">2등 이력</span>`;
+            }
           }
 
           const cardItem = document.createElement('div');
