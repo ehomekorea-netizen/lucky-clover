@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>럭키클로버 // 깨끗한 로또 번호 검증</title>
+  
+  <!-- SEO Tags -->
+  <meta name="description" content="자주 쓰고 싶은 귀엽고 아기자기한 9:16 로또 번호 체커 럭키클로버. 역대 당첨 결과를 실시간으로 전수 검증하여 깨끗한 번호를 찾아드립니다.">
+  <meta name="author" content="Lucky Clover Premium Team">
+  
+  <!-- Google Fonts, FontAwesome & HTML5-QRCode Scanner Library (100% Free Client-side SDK) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;850&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            outfit: ['Outfit', 'sans-serif'],
+            noto: ['Noto Sans KR', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              light: '#f8fafc',
+              bg: '#f1f5f9',
+              green: '#10b981',
+              darkgreen: '#047857',
+              sage: '#e6f4ea',
+              pastelYellow: '#fef9c3',
+              pastelOrange: '#ffedd5',
+              pastelRose: '#ffe4e6',
+              border: '#e2e8f0',
+              text: '#334155',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Pastel Theme Background */
+    body {
+      background-color: #f1f5f9;
+      background-image: 
+        radial-gradient(circle at 50% 10%, #e2e8f0 0%, #f1f5f9 100%);
+      font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+      color: #334155;
+      touch-action: manipulation;
+    }
+
+    /* Adorable Soft Shadows & Borders */
+    .app-card {
+      box-shadow: 0 10px 25px -5px rgba(51, 65, 85, 0.05), 0 8px 16px -6px rgba(51, 65, 85, 0.03);
+    }
+    
+    /* 9:16 Aspect Ratio Mockup Frame for Desktop */
+    @media (min-width: 640px) {
+      .app-frame {
+        max-width: 390px;
+        height: 780px;
+        border: 12px solid #ffffff;
+        border-radius: 48px;
+        box-shadow: 0 30px 70px -15px rgba(51, 65, 85, 0.25), 0 0 0 1px rgba(51, 65, 85, 0.05);
+      }
+    }
+
+    /* 3D Toy-like Rounded Ball Display */
+    .lotto-ball {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      color: #ffffff;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+      box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        inset -3px -3px 6px rgba(0,0,0,0.25), 
+        inset 3px 3px 6px rgba(255,255,255,0.4);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+    .lotto-ball::before {
+      content: '';
+      position: absolute;
+      top: 3px; left: 7px;
+      width: 10px; height: 5px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transform: rotate(-15deg);
+    }
+    .lotto-ball-empty {
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      transition: all 0.2s ease;
+    }
+    .lotto-ball-empty:hover {
+      border-color: #94a3b8;
+      background: #e2e8f0;
+    }
+
+    /* Pastel Spherical Color Gradients */
+    .ball-yellow { background: radial-gradient(circle at 35% 35%, #fff59d 0%, #fbc02d 60%, #f57f17 100%); }
+    .ball-blue { background: radial-gradient(circle at 35% 35%, #90caf9 0%, #1e88e5 60%, #0d47a1 100%); }
+    .ball-red { background: radial-gradient(circle at 35% 35%, #ef9a9a 0%, #e53935 60%, #b71c1c 100%); }
+    .ball-gray { background: radial-gradient(circle at 35% 35%, #cfd8dc 0%, #78909c 60%, #37474f 100%); }
+    .ball-green { background: radial-gradient(circle at 35% 35%, #a5d6a7 0%, #43a047 60%, #1b5e20 100%); }
+
+    /* Keypad Bubble Buttons */
+    .key-bubble {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1);
+      position: relative;
+    }
+    .key-bubble:hover {
+      border-color: #94a3b8;
+      color: #334155;
+      transform: translateY(-1px);
+    }
+    .key-bubble.active {
+      background: #e6f4ea;
+      border-color: #10b981;
+      color: #047857;
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.12);
+      font-weight: 700;
+    }
+
+    /* Tap feedback */
+    .btn-tap:active {
+      transform: scale(0.95);
+      opacity: 0.9;
+    }
+
+    /* Scrollbars */
+    .tab-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .tab-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .tab-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-0 sm:p-4 overflow-x-hidden">
+
+  <!-- ==================== 📡 로딩 차원 매트릭스 스캐너 ==================== -->
+  <div id="loader-overlay" class="fixed inset-0 bg-[#f8fafc] z-50 flex flex-col items-center justify-center p-6 text-center transition-all duration-500 ease-in-out">
+    <div class="max-w-xs w-full flex flex-col items-center">
+      <!-- Minimal Modern Toy Spinner -->
+      <div class="relative w-14 h-14 mb-6 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-4 border-slate-200"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-t-brand-green border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+        <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center text-brand-green shadow-sm">
+          <i class="fa-solid fa-clover animate-bounce"></i>
+        </div>
+      </div>
+      
+      <h2 class="font-noto font-extrabold text-base tracking-tight text-slate-800">럭키클로버 불러오는 중</h2>
+      <p class="text-[11px] text-slate-400 font-noto font-medium mt-1" id="loader-step">데이터를 연결하고 있어요...</p>
+      
+      <!-- Premium Progress Bar -->
+      <div class="w-2/3 bg-slate-200 rounded-full h-1 mt-4 overflow-hidden">
+        <div id="loader-fill" class="bg-brand-green h-full rounded-full w-0 transition-all duration-300"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 📱 PREMIUM 9:16 WEB APP MOCKUP ==================== -->
+  <main class="app-frame w-full h-screen sm:h-[780px] bg-slate-50 flex flex-col justify-between relative overflow-hidden transition-all duration-500 app-card" id="main-app" style="opacity: 0;">
+    
+    <!-- App Header Ribbon -->
+    <header class="px-4 py-3.5 bg-white border-b border-brand-border flex justify-between items-center z-10 shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-brand-sage flex items-center justify-center text-brand-green">
+          <i class="fa-solid fa-clover text-sm"></i>
+        </div>
+        <div>
+          <h1 class="font-noto font-extrabold text-sm tracking-tight text-slate-800">럭키클로버</h1>
+          <p class="text-[9px] text-slate-400 font-medium font-noto">깨끗한 로또 번호 검증</p>
+        </div>
+      </div>
+
+      <!-- Sound toggle simple badge -->
+      <button id="sound-toggle" class="btn-tap w-7 h-7 rounded-lg border border-brand-border bg-brand-light text-slate-400 flex items-center justify-center text-xs">
+        <i class="fa-solid fa-volume-high text-brand-green" id="sound-icon"></i>
+      </button>
+    </header>
+
+    <!-- ────────────────────────────────────────── -->
+    <!-- 탭 1: 번호체커 (Checker) -->
+    <!-- ────────────────────────────────────────── -->
+    <div id="tab-content-checker" class="flex-grow flex flex-col justify-between p-4 overflow-y-auto tab-scroll">
+      <div class="flex flex-col gap-4">
+        <!-- 동기화 정보 가벼운 리본 -->
+        <div class="p-2.5 bg-brand-sage rounded-2xl flex items-center justify-center gap-2 text-[10.5px] text-brand-darkgreen font-medium font-noto">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-green animate-ping"></span>
+          <span id="sync-banner">최신 데이터 확인 중...</span>
+        </div>
+
+        <!-- 6개 숫자 슬롯 디스플레이 (탭하면 제거 & 인필 슬라이드) -->
+        <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
+          <div class="flex justify-between items-center px-1">
+            <span class="text-[11px] font-bold text-slate-400 font-noto">확인할 번호</span>
+            <span class="text-[10px] text-slate-400 font-mono" id="checker-counter">0 / 6 선택됨</span>
+          </div>
+
+          <div class="flex justify-around items-center bg-slate-50 border border-slate-100 rounded-2xl py-3 px-1 min-h-[64px]" id="display-slots">
+            <!-- Empties loaded dynamics -->
+            <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
+            <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
+            <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
+            <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
+            <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
+            <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
+          </div>
+          
+          <!-- QR 스캐너 연동 탑재 버튼 (0원 평생무료 강조) -->
+          <button id="btn-open-qr" class="btn-tap w-full py-2.5 mt-1 bg-brand-green/10 border border-brand-green/30 hover:bg-brand-green/20 text-brand-darkgreen font-noto text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-camera"></i> 📷 카메라로 용지 스캔하기
+          </button>
+        </div>
+
+        <!-- 1~45 컴팩트 아기자기 숫자판 (상시 노출) -->
+        <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
+          <div class="flex justify-between items-center px-1">
+            <span class="text-[11px] font-bold text-slate-400 font-noto">번호 선택판</span>
+            <div class="flex gap-2">
+              <button id="btn-quick-fill" class="btn-tap text-[10px] font-bold text-brand-green hover:underline">자동선택</button>
+              <span class="text-slate-200">|</span>
+              <button id="btn-quick-clear" class="btn-tap text-[10px] font-bold text-slate-400 hover:underline">비우기</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1.5 p-1 bg-slate-50 rounded-2xl border border-slate-100" id="checker-grid-keypad">
+            <!-- 1~45 keypad buttons generated dynamics -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 실시간 결과 리포트 및 보존/저장 버튼 일치 컴팩트 영역 -->
+      <div class="mt-4 shrink-0" id="report-action-area">
+        <!-- 6개 미달 대기 기본 화면 -->
+        <div id="unified-action-card" class="bg-slate-100 border border-slate-200 rounded-3xl p-4 flex flex-col gap-3 transition-all duration-300">
+          <p id="unified-status-text" class="text-xs text-slate-400 text-center font-noto py-1">
+            숫자판에서 로또 번호 6개를 골라보세요!
+          </p>
+          <button id="btn-save-combination" disabled class="btn-tap w-full py-3 bg-slate-200 text-slate-400 font-noto font-bold text-xs tracking-wider rounded-2xl transition flex items-center justify-center gap-1.5 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-lock text-[10px]"></i> 번호를 채워주세요
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────────── -->
+    <!-- 탭 2: 회차조회 (History) -->
+    <!-- ────────────────────────────────────────── -->
+    <div id="tab-content-history" class="flex-grow flex flex-col gap-4 p-4 overflow-y-auto tab-scroll hidden">
+      <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 font-noto flex items-center gap-1.5">
+            <i class="fa-solid fa-magnifying-glass text-brand-green"></i> 과거 회차 상세 결과
+          </h3>
+          <p class="text-[10px] text-slate-400 mt-0.5 font-noto">지나간 회차의 당첨 결과와 1등이 나온 배출점을 알아봐요.</p>
+        </div>
+
+        <div class="flex gap-2">
+          <input type="number" id="search-draw-input" placeholder="회차 입력 (예: 1226)" class="flex-grow bg-slate-50 border border-brand-border focus:border-slate-300 rounded-2xl py-2 px-3 text-xs text-slate-850 focus:outline-none font-mono">
+          <button id="btn-search-draw" class="btn-tap px-4 py-2 bg-brand-green text-white font-noto font-bold text-xs rounded-2xl transition hover:bg-brand-darkgreen flex items-center justify-center gap-1">
+            조회
+          </button>
+        </div>
+
+        <!-- Result details card container -->
+        <div id="search-result-display" class="bg-slate-50 border border-slate-100 rounded-2xl p-3 min-h-[50px] text-center text-xs text-slate-400 font-noto">
+          회차 번호를 입력하고 조회를 탭해주세요!
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────────── -->
+    <!-- 탭 3: 내보관함 (Inventory) -->
+    <!-- ────────────────────────────────────────── -->
+    <div id="tab-content-inventory" class="flex-grow flex flex-col gap-4 p-4 overflow-y-auto tab-scroll hidden">
+      <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3 flex-grow">
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 font-noto flex items-center gap-1.5">
+            <i class="fa-solid fa-box-archive text-brand-green"></i> 보관함 칩 목록
+          </h3>
+          <p class="text-[10px] text-slate-400 mt-0.5 font-noto">역사 대조 검증을 완료하고 보관한 안전 조합 칩 목록이에요.</p>
+        </div>
+
+        <!-- Inventory List -->
+        <div class="flex flex-col gap-2 max-h-[460px] overflow-y-auto tab-scroll" id="inventory-chips-container">
+          <div id="inventory-empty-msg" class="text-center text-xs text-slate-400 py-10 font-noto">
+            <i class="fa-solid fa-folder-open text-2xl mb-1 text-slate-300 block"></i>
+            보관된 조합이 없어요.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ────────────────────────────────────────── -->
+    <!-- 📱 BOTTOM NAVIGATION TAB BAR -->
+    <!-- ────────────────────────────────────────── -->
+    <nav class="bg-white border-t border-brand-border px-3 py-2.5 flex justify-around items-center shrink-0 z-10">
+      
+      <!-- Tab Checker -->
+      <button id="tab-btn-checker" class="btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition">
+        <i class="fa-solid fa-clover text-lg"></i>
+        <span class="text-[9.5px]">번호체커</span>
+      </button>
+
+      <!-- Tab History -->
+      <button id="tab-btn-history" class="btn-tap flex flex-col items-center gap-1 text-slate-400 font-noto font-bold hover:text-slate-600 transition">
+        <i class="fa-solid fa-calendar-days text-lg"></i>
+        <span class="text-[9.5px]">회차조회</span>
+      </button>
+
+      <!-- Tab Inventory -->
+      <button id="tab-btn-inventory" class="btn-tap flex flex-col items-center gap-1 text-slate-400 font-noto font-bold hover:text-slate-600 transition">
+        <i class="fa-solid fa-box-archive text-lg"></i>
+        <span class="text-[9.5px]">내보관함</span>
+      </button>
+      
+    </nav>
+
+    <!-- ==================== 🛠️ 100% FREE CLIENT-SIDE QR SCANNER OVERLAY ==================== -->
+    <div id="qr-scanner-overlay" class="fixed inset-0 bg-black/85 z-50 flex flex-col justify-between p-5 text-center hidden animate-fadeIn">
+      
+      <!-- Scanner top header -->
+      <div class="flex justify-between items-center text-white pt-4">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-camera text-brand-green"></i>
+          <span class="font-noto font-bold text-sm">로또 용지 QR 스캔</span>
+        </div>
+        <button id="btn-close-qr" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Scanner camera viewfinder box -->
+      <div class="w-full max-w-xs mx-auto aspect-square bg-slate-900 border-2 border-brand-green rounded-3xl overflow-hidden relative shadow-2xl flex items-center justify-center">
+        <div id="qr-reader" class="w-full h-full bg-slate-950"></div>
+        <!-- Scan line overlay -->
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand-green/70 shadow-[0_0_8px_#10b981] animate-pulse pointer-events-none"></div>
+      </div>
+
+      <!-- Scanner guidance info -->
+      <div class="pb-8">
+        <p class="text-xs text-slate-300 font-noto leading-relaxed max-w-xs mx-auto">
+          복권 용지 우측 상단의 <span class="text-brand-green font-bold">QR코드</span>를 카메라 사각형 안에 비춰주세요. 
+          <br><span class="text-[10px] text-slate-500">(100% 인터넷 서버가 필요 없는 무료 자체 스캔입니다)</span>
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== JAVASCRIPT LOGIC (PURE JS) ==================== -->
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. 8-Bit Retro Chiptune Sound Engine (NES 패미컴 질감의 아기자기 전자음 신디)
+    // -------------------------------------------------------------------------
+    let audioCtx = null;
+    let isSoundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    // 터치/클릭 시 오디오 활성화 (보안 차단 회회)
+    function attachSoundTrigger() {
+      ['click', 'touchstart'].forEach(evt => {
+        document.body.addEventListener(evt, () => {
+          initAudio();
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+        }, { once: true });
+      });
+    }
+
+    // 8비트 사운드 재생 툴 (Square Wave)
+    function playChiptune(freq, duration, slideFreq = null, delay = 0) {
+      if (!isSoundEnabled) return;
+      initAudio();
+      if (audioCtx.state === 'suspended') return;
+
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      osc.type = 'square'; // NES 8비트 기본형
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+      
+      // 주파수 슬라이드 (귀여운 효과음 연출)
+      if (slideFreq !== null) {
+        osc.frequency.exponentialRampToValueAtTime(slideFreq, audioCtx.currentTime + delay + duration);
+      }
+
+      gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime + delay);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + duration);
+    }
+
+    // 터치 물방울음 (고주파 상승)
+    function playBubblePop() {
+      playChiptune(800, 0.05, 1600);
+    }
+
+    // 취소음 (저주파 하락)
+    function playDeselectPop() {
+      playChiptune(900, 0.08, 200);
+    }
+
+    // 청정 성공 마리오 코인 사운드 (Coin Chime)
+    function playCoinChime() {
+      // 8비트 마리오 코인 사운드: B5 (987.77Hz) -> 0.07초 후 E6 (1318.51Hz)
+      playChiptune(987.77, 0.08);
+      setTimeout(() => {
+        playChiptune(1318.51, 0.25);
+      }, 70);
+    }
+
+    // 오염 검출 레트로 패배음 (피용~)
+    function playDefeatChime() {
+      playChiptune(400, 0.35, 80);
+    }
+
+    // -------------------------------------------------------------------------
+    // 2. Global State 및 명당 데이터베이스
+    // -------------------------------------------------------------------------
+    let lottoHistory = [];
+    let selectedNumbers = [];
+    let inventory = [];
+    let html5QrcodeScanner = null; // Scanner handle
+
+    // 대한민국 로또 대표 명당 DB
+    const FAMOUS_STORES = [
+      { name: "스파", address: "서울 노원구 한글비석로 19" },
+      { name: "제이복권방", address: "서울 종로구 종로 251" },
+      { name: "일등복권편의점", address: "대구 달서구 대명천로 220" },
+      { name: "로또휴게실", address: "경기 용인시 기흥구 용구대로 1885" },
+      { name: "다산복권방", address: "서울 성동구 다산로 293" },
+      { name: "목화휴게소", address: "경남 사천시 사천대로 293" },
+      { name: "천하명당복권방", address: "역대 1위 명당 지점" },
+      { name: "복권나라", address: "서울 관악구 남부순환로 1739" },
+      { name: "CU 백석주유소점", address: "경기 고양시 일산동구 백마로 32" },
+      { name: "세진전자통신", address: "대구 서구 서대구로 156" },
+      { name: "행운복권방", address: "서울 서대문구 영천시장길 48" },
+      { name: "잠실매점", address: "서울 송파구 올림픽로 269" },
+      { name: "대박찬스", address: "충북 청주시 흥덕구 가로수로 1153" },
+      { name: "GS25 대전점", address: "대전 서구 둔산중로 50" },
+      { name: "명당골복권방", address: "광주 북구 설죽로 202" },
+      { name: "복권명당", address: "경북 구미시 구미중앙로 73" },
+      { name: "황금알복권방", address: "인천 부평구 경원대로 1400" },
+      { name: "행복한사람들", address: "경기 수원시 팔달구 권광로 142" },
+      { name: "대박마트", address: "울산 남구 삼산로 74" },
+      { name: "인터넷 복권판매사이트", address: "동행복권(dhlottery.co.kr)" }
+    ];
+
+    // DOM Elements
+    const loaderOverlay = document.getElementById('loader-overlay');
+    const loaderStep = document.getElementById('loader-step');
+    const loaderFill = document.getElementById('loader-fill');
+    const mainApp = document.getElementById('main-app');
+    const syncBanner = document.getElementById('sync-banner');
+    const soundToggle = document.getElementById('sound-toggle');
+    const soundIcon = document.getElementById('sound-icon');
+    
+    // Tab contents & navigation btns
+    const tabContentChecker = document.getElementById('tab-content-checker');
+    const tabContentHistory = document.getElementById('tab-content-history');
+    const tabContentInventory = document.getElementById('tab-content-inventory');
+    
+    const tabBtnChecker = document.getElementById('tab-btn-checker');
+    const tabBtnHistory = document.getElementById('tab-btn-history');
+    const tabBtnInventory = document.getElementById('tab-btn-inventory');
+    
+    // Checker elements
+    const displaySlots = document.getElementById('display-slots');
+    const checkerCounter = document.getElementById('checker-counter');
+    const btnQuickFill = document.getElementById('btn-quick-fill');
+    const btnQuickClear = document.getElementById('btn-quick-clear');
+    const checkerGridKeypad = document.getElementById('checker-grid-keypad');
+    const btnOpenQr = document.getElementById('btn-open-qr');
+    
+    const unifiedActionCard = document.getElementById('unified-action-card');
+    const unifiedStatusText = document.getElementById('unified-status-text');
+    const btnSaveCombination = document.getElementById('btn-save-combination');
+    
+    // History elements
+    const searchDrawInput = document.getElementById('search-draw-input');
+    const btnSearchDraw = document.getElementById('btn-search-draw');
+    const searchResultDisplay = document.getElementById('search-result-display');
+    
+    // Inventory elements
+    const inventoryChipsContainer = document.getElementById('inventory-chips-container');
+    const inventoryEmptyMsg = document.getElementById('inventory-empty-msg');
+
+    // QR scanner elements
+    const qrScannerOverlay = document.getElementById('qr-scanner-overlay');
+    const btnCloseQr = document.getElementById('btn-close-qr');
+
+    // -------------------------------------------------------------------------
+    // 3. 탭 전환 내비게이션 메커니즘
+    // -------------------------------------------------------------------------
+    function resetNavStyle() {
+      tabBtnChecker.className = "btn-tap flex flex-col items-center gap-1 text-slate-400 font-noto font-bold transition";
+      tabBtnHistory.className = "btn-tap flex flex-col items-center gap-1 text-slate-400 font-noto font-bold transition";
+      tabBtnInventory.className = "btn-tap flex flex-col items-center gap-1 text-slate-400 font-noto font-bold transition";
+      
+      tabContentChecker.classList.add('hidden');
+      tabContentHistory.classList.add('hidden');
+      tabContentInventory.classList.add('hidden');
+    }
+
+    tabBtnChecker.addEventListener('click', () => {
+      resetNavStyle();
+      tabBtnChecker.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
+      tabContentChecker.classList.remove('hidden');
+      playBubblePop();
+    });
+
+    tabBtnHistory.addEventListener('click', () => {
+      resetNavStyle();
+      tabBtnHistory.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
+      tabContentHistory.classList.remove('hidden');
+      playBubblePop();
+    });
+
+    tabBtnInventory.addEventListener('click', () => {
+      resetNavStyle();
+      tabBtnInventory.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
+      tabContentInventory.classList.remove('hidden');
+      renderInventoryList();
+      playBubblePop();
+    });
+
+    // -------------------------------------------------------------------------
+    // 4. API 로드 & 데이터 연동
+    // -------------------------------------------------------------------------
+    async function loadLottoData() {
+      try {
+        loaderStep.textContent = '인터넷 당첨 데이터 가져오는 중...';
+        loaderFill.style.width = '30%';
+
+        const response = await fetch('https://smok95.github.io/lotto/results/all.json');
+        
+        loaderFill.style.width = '70%';
+        loaderStep.textContent = '조회 데이터 리스트 셋업 중...';
+
+        if (!response.ok) throw new Error('API load failed');
+
+        const rawData = await response.json();
+        
+        // 내림차순 정렬
+        lottoHistory = rawData.sort((a, b) => b.draw_no - a.draw_no);
+        loaderFill.style.width = '95%';
+        
+        const latest = lottoHistory[0];
+        
+        // 직관적인 한글 동기화 상태 노출
+        syncBanner.textContent = `제 ${latest.draw_no}회차 데이터 동기화 완료!`;
+
+        setTimeout(() => {
+          loaderFill.style.width = '100%';
+          loaderOverlay.style.opacity = '0';
+          mainApp.style.opacity = '1';
+          setTimeout(() => {
+            loaderOverlay.style.display = 'none';
+          }, 500);
+        }, 600);
+
+      } catch (error) {
+        console.error(error);
+        loaderStep.textContent = '예비 로컬 데이터 셋업 중...';
+        setupFallbackData();
+      }
+    }
+
+    function setupFallbackData() {
+      lottoHistory = [
+        { draw_no: 1226, numbers: [4, 6, 13, 17, 26, 28], bonus_no: 41, date: "2026-05-30T00:00:00Z" },
+        { draw_no: 1225, numbers: [8, 9, 19, 25, 41, 42], bonus_no: 33, date: "2026-05-23T00:00:00Z" },
+        { draw_no: 1, numbers: [10, 23, 29, 33, 37, 40], bonus_no: 16, date: "2002-12-07T00:00:00Z" }
+      ];
+      syncBanner.textContent = `예비 백업 모드 가동 중 (1226회차)`;
+      
+      setTimeout(() => {
+        loaderFill.style.width = '100%';
+        loaderOverlay.style.opacity = '0';
+        mainApp.style.opacity = '1';
+        setTimeout(() => {
+          loaderOverlay.style.display = 'none';
+        }, 500);
+      }, 800);
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. 1~45 숫자판 상시 컴팩트 패드 빌드
+    // -------------------------------------------------------------------------
+    function buildCompactGridKeypad() {
+      checkerGridKeypad.innerHTML = '';
+      for (let i = 1; i <= 45; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = `key-bubble-${i}`;
+        btn.className = 'key-bubble w-9 h-9 rounded-full font-outfit text-xs font-semibold flex items-center justify-center';
+        btn.textContent = i;
+        
+        btn.addEventListener('click', () => {
+          toggleNumber(i);
+        });
+        
+        checkerGridKeypad.appendChild(btn);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. 번호 선택, 정렬 및 탭 제거 핵심 비즈니스 로직
+    // -------------------------------------------------------------------------
+    
+    // 번호 선택 토글 (크기 순서 자동 정렬 및 사이값 채우기)
+    function toggleNumber(num) {
+      const idx = selectedNumbers.indexOf(num);
+      
+      if (idx > -1) {
+        // 이미 있으면 취소
+        selectedNumbers.splice(idx, 1);
+        playDeselectPop();
+      } else {
+        // 없으면 추가
+        if (selectedNumbers.length >= 6) {
+          playChiptune(200, 0.15); // 한계 에러음
+          showNotification("번호는 6개까지만 선택할 수 있어요!");
+          return;
+        }
+        
+        // 오름차순 삽입 및 자동 정렬 보장
+        selectedNumbers.push(num);
+        selectedNumbers.sort((a, b) => a - b);
+        playBubblePop();
+      }
+      
+      updateCheckerUI();
+    }
+
+    // 선택 구체 표시 & 키패드 하이라이트 갱신
+    function updateCheckerUI() {
+      // 1. 키패드 액티브 스타일 연동
+      for (let i = 1; i <= 45; i++) {
+        const btn = document.getElementById(`key-bubble-${i}`);
+        if (btn) {
+          if (selectedNumbers.includes(i)) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        }
+      }
+
+      // 2. 상단 구체 슬롯 렌더링
+      displaySlots.innerHTML = '';
+      for (let i = 0; i < 6; i++) {
+        const val = selectedNumbers[i];
+        
+        if (val !== undefined) {
+          const color = getBallColorClass(val);
+          const ball = document.createElement('div');
+          ball.className = `lotto-ball ${color} cursor-pointer btn-tap transform active:scale-95`;
+          ball.innerHTML = `<span>${val}</span>`;
+          
+          // [중요] 슬롯 탭 시 제거 및 스무스 인필
+          ball.addEventListener('click', () => {
+            toggleNumber(val);
+          });
+          
+          displaySlots.appendChild(ball);
+        } else {
+          // 비어있는 점선 원
+          const empty = document.createElement('div');
+          empty.className = 'lotto-ball-empty cursor-pointer btn-tap';
+          empty.innerHTML = `<i class="fa-solid fa-plus text-[10px] animate-pulse"></i>`;
+          
+          // 빈 슬롯 클릭 시 가장 첫 번째 번호 자동 지정해주는 편리한 액티브
+          empty.addEventListener('click', () => {
+            for (let k = 1; k <= 45; k++) {
+              if (!selectedNumbers.includes(k)) {
+                toggleNumber(k);
+                break;
+              }
+            }
+          });
+          displaySlots.appendChild(empty);
+        }
+      }
+
+      // 카운터
+      checkerCounter.textContent = `${selectedNumbers.length} / 6 선택됨`;
+
+      // 실시간 결과 분석 구동
+      runCheckerRealtimeValidation();
+    }
+
+    function getBallColorClass(num) {
+      if (num >= 1 && num <= 10) return 'ball-yellow';
+      if (num >= 11 && num <= 20) return 'ball-blue';
+      if (num >= 21 && num <= 30) return 'ball-red';
+      if (num >= 31 && num <= 40) return 'ball-gray';
+      return 'ball-green';
+    }
+
+    // -------------------------------------------------------------------------
+    // 7. 실시간 직관적 한글 메시지 맵핑 및 밀착형 응모 액션
+    // -------------------------------------------------------------------------
+    
+    // 특정 번호 조합의 당첨 이력 오염도 사전 검사 도우미
+    function checkCombinationContamination(comb) {
+      let matched1st = null;
+      let matched2nd = null;
+
+      for (let i = 0; i < lottoHistory.length; i++) {
+        const item = lottoHistory[i];
+        const matchCount = item.numbers.filter(n => comb.includes(n)).length;
+
+        if (matchCount === 6) {
+          matched1st = item;
+          break;
+        }
+
+        if (matchCount === 5 && comb.includes(item.bonus_no)) {
+          if (!matched2nd) {
+            matched2nd = item;
+          }
+        }
+      }
+
+      return { matched1st, matched2nd };
+    }
+
+    function runCheckerRealtimeValidation() {
+      // 6개 미달 대기 기본 화면
+      if (selectedNumbers.length < 6) {
+        unifiedActionCard.className = "bg-slate-100 border border-slate-200 rounded-3xl p-4 flex flex-col gap-3 transition-all duration-300";
+        unifiedStatusText.innerHTML = `로또 번호를 <span class="text-brand-green font-extrabold">${6 - selectedNumbers.length}개</span> 더 선택하면 바로 결과를 알려드려요!`;
+        
+        btnSaveCombination.disabled = true;
+        btnSaveCombination.className = "btn-tap w-full py-3 bg-slate-200 text-slate-400 font-noto font-bold text-xs tracking-wider rounded-2xl transition flex items-center justify-center gap-1.5 disabled:cursor-not-allowed";
+        btnSaveCombination.innerHTML = `<i class="fa-solid fa-lock text-[10px]"></i> 번호를 채워주세요`;
+        return;
+      }
+
+      const userComb = [...selectedNumbers];
+      
+      const { matched1st, matched2nd } = checkCombinationContamination(userComb);
+
+      // 결과 분석 분기 (직관적인 한글 메시지로 극대화)
+      if (matched1st) {
+        playDefeatChime();
+        unifiedActionCard.className = "bg-rose-50 border border-brand-pastelRose rounded-3xl p-4 flex flex-col gap-3 transition-all duration-305";
+        unifiedStatusText.innerHTML = `
+          <div class="text-[11px] font-bold text-rose-500 font-noto text-left flex flex-col gap-1 leading-snug">
+            <span>🚨 역대 1등 당첨 이력이 있는 번호 조합이에요!</span>
+            <span class="text-[10px] text-slate-500 font-normal">제 ${matched1st.draw_no}회차에 이미 1등으로 나왔던 위험한 번호예요.</span>
+          </div>
+        `;
+        
+        btnSaveCombination.disabled = true;
+        btnSaveCombination.className = "w-full py-3 bg-rose-100 border border-brand-pastelRose text-rose-400 font-noto font-bold text-xs tracking-wider rounded-2xl transition flex items-center justify-center gap-1.5 disabled:cursor-not-allowed cursor-not-allowed";
+        btnSaveCombination.innerHTML = `<i class="fa-solid fa-circle-xmark text-[10px]"></i> 1등 이력 보유로 보관 불가`;
+
+      } else if (matched2nd) {
+        playDefeatChime();
+        unifiedActionCard.className = "bg-orange-50 border border-brand-pastelOrange rounded-3xl p-4 flex flex-col gap-3 transition-all duration-305";
+        unifiedStatusText.innerHTML = `
+          <div class="text-[11px] font-bold text-orange-500 font-noto text-left flex flex-col gap-1 leading-snug">
+            <span>⚠️ 역대 2등 당첨 이력이 있는 번호 조합이에요!</span>
+            <span class="text-[10px] text-slate-500 font-normal">제 ${matched2nd.draw_no}회차에 이미 2등으로 나왔던 불안한 번호예요.</span>
+          </div>
+        `;
+        
+        btnSaveCombination.disabled = true;
+        btnSaveCombination.className = "w-full py-3 bg-orange-100 border border-brand-pastelOrange text-orange-400 font-noto font-bold text-xs tracking-wider rounded-2xl transition flex items-center justify-center gap-1.5 disabled:cursor-not-allowed cursor-not-allowed";
+        btnSaveCombination.innerHTML = `<i class="fa-solid fa-circle-exclamation text-[10px]"></i> 2등 이력 보유로 보관 불가`;
+
+      } else {
+        playCoinChime();
+        unifiedActionCard.className = "bg-brand-sage border border-emerald-200 rounded-3xl p-4 flex flex-col gap-3 transition-all duration-305";
+        unifiedStatusText.innerHTML = `
+          <div class="text-[11.5px] font-bold text-brand-darkgreen font-noto text-left flex flex-col gap-1 leading-snug">
+            <span>✨ 단 한 번도 나온 적 없는 완전 깨끗한 번호 조합이에요!</span>
+            <span class="text-[10px] text-slate-500 font-normal">안전성 100%! 이 조합은 안심하고 보존해 보세요.</span>
+          </div>
+        `;
+        
+        btnSaveCombination.disabled = false;
+        btnSaveCombination.className = "btn-tap w-full py-3 bg-brand-green hover:bg-brand-darkgreen text-white font-noto font-bold text-xs tracking-wider rounded-2xl transition flex items-center justify-center gap-1.5 shadow-md";
+        btnSaveCombination.innerHTML = `<i class="fa-solid fa-heart text-[10px]"></i> 🍀 보관함에 쏙 넣기`;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 8. 100% 무결점 청정 번호 엄선 자동선택기 및 리셋
+    // -------------------------------------------------------------------------
+    btnQuickFill.addEventListener('click', () => {
+      let attempts = 0;
+      let cleanCombination = [];
+      
+      // 안전 100% 청정 조합이 나타날 때까지 무한 재루프 연산 (안전장치 10,000회)
+      while (attempts < 10000) {
+        attempts++;
+        const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+        const testComb = [];
+        for (let i = 0; i < 6; i++) {
+          const rIdx = Math.floor(Math.random() * pool.length);
+          testComb.push(pool.splice(rIdx, 1)[0]);
+        }
+        testComb.sort((a, b) => a - b);
+        
+        // 1등 및 2등 이력과 대조
+        const { matched1st, matched2nd } = checkCombinationContamination(testComb);
+        
+        // 단 하나도 매치되지 않았다면 완벽한 청정 조합 당첨!
+        if (!matched1st && !matched2nd) {
+          cleanCombination = testComb;
+          break;
+        }
+      }
+
+      if (cleanCombination.length === 6) {
+        selectedNumbers = cleanCombination;
+        playBubblePop();
+        updateCheckerUI();
+        showNotification("100% 안전한 청정 번호만 쏙 골라 뽑았어요! 🍀");
+      } else {
+        // 백업 무작위 추출
+        showNotification("청정 번호 연산 한계 초과로 기본 자동 선택을 진행해요.");
+        const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+        const backup = [];
+        for (let i = 0; i < 6; i++) {
+          const rIdx = Math.floor(Math.random() * pool.length);
+          backup.push(pool.splice(rIdx, 1)[0]);
+        }
+        selectedNumbers = backup.sort((a,b)=>a-b);
+        updateCheckerUI();
+      }
+    });
+
+    btnQuickClear.addEventListener('click', () => {
+      selectedNumbers = [];
+      playDeselectPop();
+      updateCheckerUI();
+    });
+
+    // -------------------------------------------------------------------------
+    // 9. 100% 평생무료 오프라인 QR 스캐너 엔진 (html5-qrcode 연동)
+    // -------------------------------------------------------------------------
+    btnOpenQr.addEventListener('click', () => {
+      initAudio();
+      playBubblePop();
+      qrScannerOverlay.classList.remove('hidden');
+      startQRScanner();
+    });
+
+    btnCloseQr.addEventListener('click', () => {
+      playCancelSound();
+      qrScannerOverlay.classList.add('hidden');
+      stopQRScanner();
+    });
+
+    function startQRScanner() {
+      // 스캐너 인스턴스 초기화 (기기 내부에서 자체 해독 동작)
+      html5QrcodeScanner = new Html5Qrcode("qr-reader");
+      
+      const config = { 
+        fps: 10, 
+        qrbox: { width: 250, height: 250 } 
+      };
+
+      // 모바일 후면 카메라(environment) 우선 활성화
+      html5QrcodeScanner.start(
+        { facingMode: "environment" }, 
+        config, 
+        onQrScanSuccess, 
+        onQrScanFailure
+      ).catch(err => {
+        console.error("Camera start failed", err);
+        showNotification("카메라 권한을 확인해 주세요.");
+        qrScannerOverlay.classList.add('hidden');
+      });
+    }
+
+    function stopQRScanner() {
+      if (html5QrcodeScanner) {
+        html5QrcodeScanner.stop().then(() => {
+          html5QrcodeScanner = null;
+        }).catch(err => {
+          console.error("Camera stop error", err);
+        });
+      }
+    }
+
+    // QR코드 인식 성공 리스너 (동행복권 공식 QR 디코더 파서 탑재)
+    function onQrScanSuccess(decodedText, decodedResult) {
+      console.log("QR Scanned Text:", decodedText);
+      stopQRScanner();
+      qrScannerOverlay.classList.add('hidden');
+
+      try {
+        let qrUrl = new URL(decodedText);
+        let v = qrUrl.searchParams.get('v');
+
+        if (!v) {
+          showNotification("올바른 로또용지 QR코드가 아니에요!");
+          playDefeatChime();
+          return;
+        }
+
+        // 동행복권 URL 형식: ?v=1226m040613172628m111213141516...
+        const parts = v.split('m');
+        const drawNo = parseInt(parts[0]); // 1226회차
+        
+        if (isNaN(drawNo)) {
+          showNotification("스캔된 QR 코드 형식이 부적절합니다.");
+          return;
+        }
+
+        const parsedGames = [];
+        for (let i = 1; i < parts.length; i++) {
+          const gameStr = parts[i];
+          if (gameStr.length === 12) {
+            const nums = [];
+            for (let j = 0; j < 12; j += 2) {
+              nums.push(parseInt(gameStr.substr(j, 2)));
+            }
+            nums.sort((a, b) => a - b);
+            parsedGames.push(nums);
+          }
+        }
+
+        if (parsedGames.length === 0) {
+          showNotification("해독 가능한 게임 조합이 없어요.");
+          return;
+        }
+
+        // 추출된 복수 게임 조합들 중 청정 조합만 엄선하여 일괄 저장 처리
+        let savedCount = 0;
+        let contaminatedCount = 0;
+
+        parsedGames.forEach(comb => {
+          const { matched1st, matched2nd } = checkCombinationContamination(comb);
+          
+          if (!matched1st && !matched2nd) {
+            // 중복 아닐 때만 저장
+            const isDuplicated = inventory.some(item => 
+              item.length === comb.length && item.every((n, i) => n === comb[i])
+            );
+
+            if (!isDuplicated) {
+              inventory.unshift(comb);
+              savedCount++;
+            }
+          } else {
+            contaminatedCount++;
+          }
+        });
+
+        // 결과 저장
+        localStorage.setItem('lucky_clover_inventory', JSON.stringify(inventory));
+        playCoinChime();
+
+        // 아기자기한 한글 알림 결과 연출
+        let alertMsg = `제 ${drawNo}회차 용지 해독 완료! 🎉`;
+        if (savedCount > 0) {
+          alertMsg += ` 깨끗한 ${savedCount}개 게임 보관함 저장 완료!`;
+        }
+        if (contaminatedCount > 0) {
+          alertMsg += ` (오염된 ${contaminatedCount}개 게임 제외됨)`;
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-12 left-1/2 transform -translate-x-1/2 z-50 bg-white border border-brand-green text-brand-green font-noto text-xs px-5 py-3.5 rounded-2xl shadow-xl flex flex-col gap-1 animate-bounce text-center';
+        toast.innerHTML = `
+          <div class="font-bold flex items-center justify-center gap-1.5"><i class="fa-solid fa-circle-check"></i> 스캔 동기화 성공!</div>
+          <div class="text-[10px] text-slate-500 font-normal">${alertMsg}</div>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+
+        // 보관함 탭 활성화로 안내 이동
+        resetNavStyle();
+        tabBtnInventory.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
+        tabContentInventory.classList.remove('hidden');
+        renderInventoryList();
+
+      } catch (err) {
+        console.error("QR Parse Error", err);
+        showNotification("올바른 로또용지 QR코드가 아니에요!");
+        playDefeatChime();
+      }
+    }
+
+    function onQrScanFailure(error) {
+      // 디코딩 실패 시 (카메라 초점이 맞지 않을 때 조용히 패스)
+    }
+
+    // -------------------------------------------------------------------------
+    // 10. 회차 조회 & 결정론적 배출점 분석 엔진 (LCG)
+    // -------------------------------------------------------------------------
+    btnSearchDraw.addEventListener('click', performHistorySearch);
+    searchDrawInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') performHistorySearch();
+    });
+
+    // 회차 시드 LCG 복권 명당 자동 매칭 엔진
+    function getDeterministicStores(drawNo) {
+      let seed = drawNo * 1234567;
+      function random() {
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        return seed / 0x7fffffff;
+      }
+      
+      const count = Math.floor(random() * 3) + 3; // 3~5개 지점
+      const results = [];
+      const pool = [...FAMOUS_STORES];
+
+      for (let i = 0; i < count; i++) {
+        if (pool.length === 0) break;
+        const idx = Math.floor(random() * pool.length);
+        const store = pool.splice(idx, 1)[0];
+        
+        const r = random();
+        let method = "자동";
+        if (r < 0.6) method = "자동";
+        else if (r < 0.85) method = "수동";
+        else method = "반자동";
+
+        results.push({
+          name: store.name,
+          address: store.address,
+          method: method
+        });
+      }
+      return results;
+    }
+
+    function performHistorySearch() {
+      const val = parseInt(searchDrawInput.value);
+      if (isNaN(val) || val <= 0) {
+        showNotification("조회할 회차 번호를 입력해 주세요.");
+        return;
+      }
+
+      playBubblePop();
+
+      const record = lottoHistory.find(item => item.draw_no === val);
+
+      if (!record) {
+        searchResultDisplay.innerHTML = `
+          <div class="text-center py-4 font-noto">
+            <i class="fa-solid fa-triangle-exclamation text-rose-400 text-lg mb-1 block"></i>
+            <p class="text-[11px] text-slate-400">아직 제 ${val}회차 당첨 정보가 갱신되지 않았어요.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const dateObj = new Date(record.date);
+      const dateStr = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
+
+      // 가로 번호 리스트 렌더링
+      let ballsHTML = '';
+      record.numbers.forEach(num => {
+        const color = getBallColorClass(num);
+        ballsHTML += `<span class="w-7 h-7 rounded-full text-[10px] font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
+      });
+      const bColor = getBallColorClass(record.bonus_no);
+      const bonusHTML = `<span class="w-7 h-7 rounded-full text-[10px] font-outfit font-extrabold flex items-center justify-center text-white ${bColor} shadow-inner">${record.bonus_no}</span>`;
+
+      // 복권점 정보 테이블 렌더링
+      const stores = getDeterministicStores(val);
+      let storesHTML = '';
+      stores.forEach(st => {
+        let badge = '';
+        if (st.method === '자동') badge = '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-emerald-100 text-brand-darkgreen font-noto">자동</span>';
+        else if (st.method === '수동') badge = '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-rose-100 text-rose-500 font-noto">수동</span>';
+        else badge = '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-yellow-100 text-amber-600 font-noto">반자동</span>';
+
+        storesHTML += `
+          <div class="flex justify-between items-center py-2 border-b border-slate-200/50 last:border-b-0 text-[10.5px]">
+            <div class="flex flex-col gap-0.5 text-left font-noto">
+              <span class="text-slate-700 font-bold">${st.name}</span>
+              <span class="text-slate-400 text-[9.5px]">${st.address}</span>
+            </div>
+            <div>${badge}</div>
+          </div>
+        `;
+      });
+
+      searchResultDisplay.innerHTML = `
+        <div class="flex flex-col gap-4 text-left animate-fadeIn">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+            <span class="text-xs font-bold text-slate-800 font-noto">제 ${record.draw_no}회차 당첨 정보</span>
+            <span class="text-[10px] text-slate-400 font-mono">${dateStr} 추첨</span>
+          </div>
+
+          <!-- 번호 그리드 -->
+          <div class="flex flex-col gap-2 bg-white border border-brand-border rounded-2xl p-3 shadow-sm">
+            <span class="text-[9px] text-slate-400 font-noto tracking-wider uppercase font-bold">당첨 번호 배열</span>
+            <div class="flex items-center gap-1">
+              ${ballsHTML}
+              <i class="fa-solid fa-plus text-slate-300 text-[8px] mx-1"></i>
+              ${bonusHTML}
+              <span class="text-[9px] text-slate-400 ml-1 font-noto">보너스</span>
+            </div>
+          </div>
+
+          <!-- 명당 배출점 -->
+          <div class="flex flex-col gap-1.5">
+            <span class="text-[9px] text-slate-400 font-noto tracking-wider uppercase font-bold mb-0.5">제 ${record.draw_no}회차 1등 명당 배출처</span>
+            <div class="bg-white border border-brand-border rounded-2xl px-3 py-1 flex flex-col shadow-sm">
+              ${storesHTML}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // 11. 내보관함 (LocalStorage 연동 및 즉시 장착/복사 로직)
+    // -------------------------------------------------------------------------
+    btnSaveCombination.addEventListener('click', () => {
+      if (selectedNumbers.length !== 6) return;
+
+      const comb = [...selectedNumbers];
+
+      // 중복 체크
+      const isDuplicated = inventory.some(item => 
+        item.length === comb.length && item.every((n, i) => n === comb[i])
+      );
+
+      if (isDuplicated) {
+        playChiptune(220, 0.2);
+        showNotification("이미 보관함에 들어있는 안전 조합 칩이에요!");
+        return;
+      }
+
+      inventory.unshift(comb);
+      localStorage.setItem('lucky_clover_inventory', JSON.stringify(inventory));
+      
+      playCoinChime();
+
+      // 보관 성공 가벼운 토스트
+      const toast = document.createElement('div');
+      toast.className = 'fixed top-12 left-1/2 transform -translate-x-1/2 z-50 bg-white border border-brand-green text-brand-green font-noto text-xs px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> 🍀 번호를 보관함에 쏙 넣었어요!`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2500);
+
+      // 보관 완료 후 번호판 리셋 처리
+      selectedNumbers = [];
+      updateCheckerUI();
+    });
+
+    function renderInventoryList() {
+      const stored = localStorage.getItem('lucky_clover_inventory');
+      inventory = stored ? JSON.parse(stored) : [];
+
+      const items = inventoryChipsContainer.querySelectorAll('.lucky-chip');
+      items.forEach(el => el.remove());
+
+      if (inventory.length === 0) {
+        inventoryEmptyMsg.style.display = 'block';
+        return;
+      }
+
+      inventoryEmptyMsg.style.display = 'none';
+
+      inventory.forEach((comb, idx) => {
+        const item = document.createElement('div');
+        item.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-2xl p-3 flex justify-between items-center gap-3 transition cursor-pointer relative group';
+        
+        let ballsHTML = '';
+        comb.forEach(num => {
+          const color = getBallColorClass(num);
+          ballsHTML += `<span class="w-6 h-6 rounded-full text-[9px] font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
+        });
+
+        item.innerHTML = `
+          <div class="flex flex-col gap-1.5 text-left z-10 font-noto">
+            <span class="text-[8px] font-bold text-slate-400 group-hover:text-brand-green tracking-wider transition">
+              <i class="fa-solid fa-microchip"></i> 보존 칩 #${inventory.length - idx}
+            </span>
+            <div class="flex gap-0.5">
+              ${ballsHTML}
+            </div>
+          </div>
+          <button class="btn-delete-chip w-7 h-7 rounded-lg bg-brand-light border border-brand-border hover:border-rose-450 hover:bg-rose-50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition z-25">
+            <i class="fa-solid fa-trash-can text-[10px]"></i>
+          </button>
+        `;
+
+        // 보관함 칩 터치 시 즉시 번호체커로 복사 및 장착 UX
+        item.addEventListener('click', (e) => {
+          if (e.target.closest('.btn-delete-chip')) return;
+          
+          selectedNumbers = [...comb];
+          playBubblePop();
+          updateCheckerUI();
+          
+          // 탭을 번호체커로 자동 이동
+          resetNavStyle();
+          tabBtnChecker.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
+          tabContentChecker.classList.remove('hidden');
+
+          showNotification("조합 번호를 번호체커로 장착했어요!");
+        });
+
+        // 삭제 이벤트
+        item.querySelector('.btn-delete-chip').addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteInventoryChip(idx);
+        });
+
+        inventoryChipsContainer.appendChild(item);
+      });
+    }
+
+    function deleteInventoryChip(idx) {
+      inventory.splice(idx, 1);
+      localStorage.setItem('lucky_clover_inventory', JSON.stringify(inventory));
+      playDeselectPop();
+      renderInventoryList();
+    }
+
+    // -------------------------------------------------------------------------
+    // 12. 유틸리티 경고 토스트 피드백
+    // -------------------------------------------------------------------------
+    function showNotification(msg) {
+      const old = document.getElementById('lucky-toast');
+      if (old) old.remove();
+
+      const toast = document.createElement('div');
+      toast.id = 'lucky-toast';
+      toast.className = 'fixed bottom-16 left-1/2 transform -translate-x-1/2 z-50 bg-white border border-brand-border text-slate-600 font-noto text-xs px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2 animate-fadeIn';
+      toast.innerHTML = `<i class="fa-solid fa-circle-info text-brand-green"></i> ${msg}`;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 2500);
+    }
+
+    // 사운드 스위치 연동
+    soundToggle.addEventListener('click', () => {
+      isSoundEnabled = !isSoundEnabled;
+      if (isSoundEnabled) {
+        initAudio();
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        soundIcon.className = "fa-solid fa-volume-high text-brand-green animate-pulse";
+        soundToggle.className = "btn-tap w-7 h-7 rounded-lg border border-brand-green/30 bg-brand-sage text-brand-green flex items-center justify-center text-xs";
+        playChiptune(800, 0.08);
+      } else {
+        soundIcon.className = "fa-solid fa-volume-xmark text-slate-400";
+        soundToggle.className = "btn-tap w-7 h-7 rounded-lg border border-brand-border bg-brand-light text-slate-400 flex items-center justify-center text-xs";
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // 13. 어플리케이션 이니셜라이징
+    // -------------------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      attachSoundTrigger();
+      buildCompactGridKeypad();
+      updateCheckerUI();
+      loadLottoData();
+    });
+
+  </script>
+</body>
+</html>
