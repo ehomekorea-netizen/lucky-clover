@@ -190,23 +190,36 @@
   <main class="app-frame w-full h-screen sm:h-[780px] bg-slate-50 flex flex-col justify-between relative overflow-hidden transition-all duration-500 app-card" id="main-app" style="opacity: 0;">
     
     <!-- App Header Ribbon -->
-    <header class="px-4 py-3 bg-white border-b border-brand-border flex justify-between items-center z-10 shrink-0">
-      <div class="flex items-center gap-3">
+    <header class="px-4 py-4.5 bg-white border-b border-brand-border flex flex-col items-center justify-center relative z-10 shrink-0">
+      <div class="flex flex-col items-center gap-1.5 text-center">
         <!-- 네잎클로버 제대로 그린 아기자기한 SVG 일러스트 -->
-        <div class="w-9 h-9 rounded-2xl bg-brand-sage flex items-center justify-center text-brand-green shadow-sm shrink-0">
-          <svg class="w-6 h-6 text-brand-green fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 12c-1.5-2.2-4.2-2.8-5.5-1.2-1.3 1.6-.5 4.3 1.8 5.1 1.2-.5 2.8-1.8 3.7-3.9zm0 0c2.2-1.5 2.8-4.2 1.2-5.5-1.6-1.3-4.3-.5-5.1 1.8.5 1.2 1.8 2.8 3.9 3.7zm0 0c1.5 2.2 4.2 2.8 5.5 1.2 1.3-1.6.5-4.3-1.8-5.1-1.2.5-2.8 1.8-3.7 3.9zm0 0c-2.2 1.5-2.8 4.2-1.2 5.5 1.6 1.3 4.3.5 5.1-1.8-.5-1.2-1.8-2.8-3.9-3.7z"/>
-            <path d="M12 12c-.5 3 .5 6.5-1.5 8.5" stroke="#10b981" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <div class="w-11 h-11 rounded-2xl bg-brand-sage flex items-center justify-center text-brand-green shadow-sm shrink-0">
+          <svg class="w-8 h-8 text-brand-green fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- 4개의 하트형 잎사귀 -->
+            <!-- 상단 잎 -->
+            <path d="M12 12 C12 8.5, 9 6, 9 8.5 C9 10.5, 11 11.5, 12 12" fill="#10b981"/>
+            <path d="M12 12 C12 8.5, 15 6, 15 8.5 C15 10.5, 13 11.5, 12 12" fill="#10b981"/>
+            <!-- 우측 잎 -->
+            <path d="M12 12 C15.5 12, 18 9, 15.5 9 C13.5 9, 12.5 11, 12 12" fill="#10b981"/>
+            <path d="M12 12 C15.5 12, 18 15, 15.5 15 C13.5 15, 12.5 13, 12 12" fill="#10b981"/>
+            <!-- 하단 잎 -->
+            <path d="M12 12 C12 15.5, 15 18, 15 15.5 C15 13.5, 13 12.5, 12 12" fill="#10b981"/>
+            <path d="M12 12 C12 15.5, 9 18, 9 15.5 C9 13.5, 11 12.5, 12 12" fill="#10b981"/>
+            <!-- 좌측 잎 -->
+            <path d="M12 12 C8.5 12, 6 15, 6 12.5 C6 10.5, 8 9.5, 12 12" fill="#10b981"/>
+            <path d="M12 12 C8.5 12, 6 9, 6 9.5 C6 11.5, 8 12.5, 12 12" fill="#10b981"/>
+            <!-- 줄기 -->
+            <path d="M12 12 C12.5 15, 14 18, 13 21" stroke="#047857" stroke-width="2" stroke-linecap="round" fill="none"/>
           </svg>
         </div>
         <div>
-          <h2 class="font-noto font-extrabold text-[15px] tracking-tight text-slate-800 leading-none">럭키클로버</h2>
-          <p class="text-[10px] text-brand-green font-bold font-noto mt-1">안전한 청정 조합 분석기</p>
+          <h2 class="font-noto font-black text-[20px] tracking-tight text-slate-800 leading-none">럭키클로버</h2>
+          <p class="text-[11px] text-brand-green font-black font-noto mt-1.5">안전한 청정 조합 분석기</p>
         </div>
       </div>
 
-      <!-- Sound toggle simple badge -->
-      <button id="sound-toggle" class="btn-tap w-7 h-7 rounded-lg border border-brand-border bg-brand-light text-slate-400 flex items-center justify-center text-xs">
+      <!-- Sound toggle simple badge (Absolute Right position) -->
+      <button id="sound-toggle" class="btn-tap w-7 h-7 rounded-lg border border-brand-border bg-brand-light text-slate-400 flex items-center justify-center text-xs absolute right-4 top-5">
         <i class="fa-solid fa-volume-high text-brand-green" id="sound-icon"></i>
       </button>
     </header>
@@ -217,9 +230,19 @@
     <div id="tab-content-checker" class="flex-grow flex flex-col justify-between p-4 overflow-y-auto tab-scroll">
       <div class="flex flex-col gap-4">
         <!-- 동기화 정보 가벼운 리본 -->
-        <div class="p-2.5 bg-brand-sage rounded-2xl flex items-center justify-center gap-2 text-[10.5px] text-brand-darkgreen font-medium font-noto">
-          <span class="w-1.5 h-1.5 rounded-full bg-brand-green animate-ping"></span>
-          <span id="sync-banner">최신 데이터 확인 중...</span>
+        <div class="p-2.5 bg-brand-sage rounded-2xl flex items-center justify-between gap-2 text-[10.5px] text-brand-darkgreen font-medium font-noto relative">
+          <div class="flex items-center gap-1.5 overflow-hidden">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-green animate-ping shrink-0"></span>
+            <span id="sync-banner" class="truncate font-semibold">최신 데이터 확인 중...</span>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button id="btn-sync-help" class="btn-tap px-1.5 py-0.5 rounded-lg bg-brand-green/10 border border-brand-green/20 hover:bg-brand-green/20 text-brand-darkgreen flex items-center justify-center gap-0.5 text-[9px] font-bold">
+              검증 ℹ️
+            </button>
+            <button id="btn-sync-refresh" class="btn-tap px-1.5 py-0.5 rounded-lg bg-brand-green/10 border border-brand-green/20 hover:bg-brand-green/20 text-brand-darkgreen flex items-center justify-center gap-0.5 text-[9px] font-bold">
+              새로고침 🔄
+            </button>
+          </div>
         </div>
 
         <!-- 6개 숫자 슬롯 디스플레이 (탭하면 제거 & 인필 슬라이드) -->
@@ -250,6 +273,9 @@
               <button id="btn-quick-clear" class="btn-tap text-[10px] font-bold text-slate-400 hover:underline">비우기</button>
             </div>
           </div>
+
+          <!-- 번호 키패드 인라인 토스트 (자동선택과 그리드 사이에 위치) -->
+          <div id="keypad-inline-toast" class="h-6 flex items-center justify-center text-[10.5px] font-bold text-rose-500 font-noto opacity-0 transition-all duration-200 bg-rose-50/70 border border-rose-100 rounded-xl" style="display: none;"></div>
 
           <div class="grid grid-cols-7 gap-1.5 p-1 bg-slate-50 rounded-2xl border border-slate-100" id="checker-grid-keypad">
             <!-- 1~45 keypad buttons generated dynamics -->
@@ -307,7 +333,7 @@
           <i class="fa-solid fa-qrcode text-brand-green"></i> 구매한 용지 등록
         </h3>
         <p class="text-[10px] text-slate-400 leading-relaxed font-noto">
-          실제 로또 용지의 QR 코드를 스캔해 보세요! 당첨 역사와 전수 대조를 마친 뒤, 오염되지 않은 <span class="text-brand-green font-bold">안전한 청정 조합들만 골라내어 보관함에 자동으로 한 번에 쏙 저장</span>해 드려요. (서버 전송이 없는 안전한 100% 무료 오프라인 스캔)
+          판매점에서 구입한 실물 복권 용지(자동/반자동/수동)의 QR 코드를 스캔해 보세요! A~E열 전체 조합(5개든 4개든)의 번호 기록을 한 번에 가져와 보관함에 온전히 담아 보관해 줍니다. (서버 전송이 없는 안전한 100% 무료 오프라인 스캔)
         </p>
         <button id="btn-open-qr" class="btn-tap w-full py-2.5 bg-brand-green/10 border border-brand-green/30 hover:bg-brand-green/20 text-brand-darkgreen font-noto text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition">
           용지 QR 스캔하기
@@ -405,6 +431,53 @@
 
     </div>
 
+    <!-- ==================== 📡 실시간 동기화 및 회차 갱신 검증 도움말 모달 ==================== -->
+    <div id="sync-help-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden animate-fadeIn">
+      <div class="bg-white rounded-3xl w-full max-w-xs p-5 shadow-2xl border border-brand-border flex flex-col gap-4 text-left">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+          <h3 class="text-sm font-bold text-slate-800 font-noto flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info text-brand-green"></i> 회차 갱신 및 검증 로직
+          </h3>
+          <button id="btn-close-sync-help" class="text-slate-400 hover:text-slate-600 text-sm font-bold">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-3 font-noto text-xs leading-relaxed text-slate-600">
+          <div>
+            <span class="font-bold text-slate-800 block mb-0.5">⏱️ 실시간 차기 회차 추정 엔진</span>
+            <p class="text-[11px] text-slate-500">
+              서버 동기화 상태와 무관하게, <strong>매주 토요일 20:45:00 KST</strong>(판매 마감 및 당첨 발표 시간)를 기점으로 시스템 시계를 대조하여 다음 차기 회차(<span id="estimated-next-draw-badge" class="text-brand-green font-bold">1227회차</span>) 대상 태그를 보존 칩에 실시간으로 자동 부여합니다.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 flex flex-col gap-1 font-mono text-[10px] text-slate-600">
+            <div class="font-bold text-slate-700 text-[10.5px] font-noto mb-0.5">회차 결정 공식 (KST 기준)</div>
+            <div>• 최신 당첨일: <span id="latest-draw-date-span">2026-05-30</span></div>
+            <div>• 현재 시각: <span id="current-time-span">실시간 반영 중</span></div>
+            <div class="border-t border-slate-200/60 pt-1 mt-1 font-bold text-brand-darkgreen">
+              • 진행 회차: 최신 회차 + 경과 주수 (자동 판정)
+            </div>
+          </div>
+
+          <div>
+            <span class="font-bold text-slate-800 block mb-0.5">🔄 깃허브 자동화 데이터 동기화</span>
+            <p class="text-[11px] text-slate-500">
+              본 앱은 GitHub Pages에 배포된 공공 <code>results/all.json</code> API를 실시간 조회합니다. 매주 토요일 20:45 당첨번호가 추첨되면, <strong>오픈소스 GitHub Actions 파이프라인</strong>이 자동으로 돌며 약 5분 내로 최신 당첨 정보를 서버에 적재하고 본 앱으로 동기화합니다.
+            </p>
+          </div>
+
+          <div class="bg-brand-sage/60 border border-brand-green/20 rounded-2xl p-3 text-[10.5px] text-brand-darkgreen font-semibold">
+            🍀 안심하고 사용하세요! 동기화가 지연되더라도, 사용자가 보관한 번호는 시간에 의해 정확히 다음 회차 태그로 자동 분류되어 영구 보존됩니다.
+          </div>
+        </div>
+
+        <button id="btn-close-sync-help-ok" class="btn-tap w-full py-2.5 bg-brand-green hover:bg-brand-darkgreen text-white font-noto text-xs font-bold rounded-2xl transition">
+          납득했습니다! 확인 🍀
+        </button>
+      </div>
+    </div>
+
   </main>
 
   <!-- ==================== JAVASCRIPT LOGIC (PURE JS) ==================== -->
@@ -489,6 +562,7 @@
     // -------------------------------------------------------------------------
     let lottoHistory = [];
     let selectedNumbers = [];
+    let manualSelectedNumbers = []; // 사용자가 키패드에서 직접 손으로 터치하여 고정한 수동 번호
     let inventory = [];
     let html5QrcodeScanner = null; // Scanner handle
 
@@ -541,6 +615,7 @@
     const btnQuickClear = document.getElementById('btn-quick-clear');
     const checkerGridKeypad = document.getElementById('checker-grid-keypad');
     const btnOpenQr = document.getElementById('btn-open-qr');
+    const keypadInlineToast = document.getElementById('keypad-inline-toast');
     
     const unifiedActionCard = document.getElementById('unified-action-card');
     const unifiedStatusText = document.getElementById('unified-status-text');
@@ -558,6 +633,16 @@
     // QR scanner elements
     const qrScannerOverlay = document.getElementById('qr-scanner-overlay');
     const btnCloseQr = document.getElementById('btn-close-qr');
+
+    // Sync help elements
+    const btnSyncHelp = document.getElementById('btn-sync-help');
+    const btnSyncRefresh = document.getElementById('btn-sync-refresh');
+    const syncHelpModal = document.getElementById('sync-help-modal');
+    const btnCloseSyncHelp = document.getElementById('btn-close-sync-help');
+    const btnCloseSyncHelpOk = document.getElementById('btn-close-sync-help-ok');
+    const estimatedNextDrawBadge = document.getElementById('estimated-next-draw-badge');
+    const latestDrawDateSpan = document.getElementById('latest-draw-date-span');
+    const currentTimeSpan = document.getElementById('current-time-span');
 
     // -------------------------------------------------------------------------
     // 3. 탭 전환 내비게이션 메커니즘
@@ -597,6 +682,45 @@
     // -------------------------------------------------------------------------
     // 4. API 로드 & 데이터 연동
     // -------------------------------------------------------------------------
+    // KST 시간 기반 차기 회차 추정 엔진
+    function getCurrentDrawNo() {
+      if (lottoHistory.length === 0) return 1227; // 기본 폴백값
+      
+      const latest = lottoHistory[0];
+      const latestDrawNo = latest.draw_no;
+      const baseDate = new Date(latest.date);
+      
+      // 최신 회차 추첨일 기준 토요일 20:45:00 KST (11:45:00 UTC) 설정
+      const baseSaturdayKST = new Date(Date.UTC(
+        baseDate.getUTCFullYear(),
+        baseDate.getUTCMonth(),
+        baseDate.getUTCDate(),
+        11, 45, 0
+      ));
+      
+      const now = new Date();
+      const diffMs = now.getTime() - baseSaturdayKST.getTime();
+      
+      if (diffMs <= 0) {
+        return latestDrawNo;
+      } else {
+        const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+        const elapsedWeeks = Math.floor(diffMs / oneWeekMs);
+        return latestDrawNo + 1 + elapsedWeeks;
+      }
+    }
+
+    function updateSyncBanner() {
+      if (lottoHistory.length === 0) return;
+      const latest = lottoHistory[0];
+      const currentDrawNo = getCurrentDrawNo();
+      syncBanner.innerHTML = `현재 <strong class="text-brand-darkgreen">${currentDrawNo}회차</strong> 진행 중 <span class="text-slate-400 font-normal font-sans">(서버: ${latest.draw_no}회차)</span>`;
+      searchDrawInput.placeholder = `회차 입력 (예: ${currentDrawNo})`;
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. API 로드 & 데이터 연동
+    // -------------------------------------------------------------------------
     async function loadLottoData() {
       try {
         loaderStep.textContent = '인터넷 당첨 데이터 가져오는 중...';
@@ -615,13 +739,7 @@
         lottoHistory = rawData.sort((a, b) => b.draw_no - a.draw_no);
         loaderFill.style.width = '95%';
         
-        const latest = lottoHistory[0];
-        
-        // 직관적인 한글 동기화 상태 노출
-        syncBanner.textContent = `제 ${latest.draw_no}회차 데이터 동기화 완료!`;
-        
-        // 회차 입력 placeholder 동적 동기화
-        searchDrawInput.placeholder = `회차 입력 (예: ${latest.draw_no})`;
+        updateSyncBanner();
 
         setTimeout(() => {
           loaderFill.style.width = '100%';
@@ -645,10 +763,7 @@
         { draw_no: 1225, numbers: [8, 9, 19, 25, 41, 42], bonus_no: 33, date: "2026-05-23T00:00:00Z" },
         { draw_no: 1, numbers: [10, 23, 29, 33, 37, 40], bonus_no: 16, date: "2002-12-07T00:00:00Z" }
       ];
-      syncBanner.textContent = `예비 백업 모드 가동 중 (1226회차)`;
-      
-      // 회차 입력 placeholder 백업용 동기화
-      searchDrawInput.placeholder = `회차 입력 (예: 1226)`;
+      updateSyncBanner();
       
       setTimeout(() => {
         loaderFill.style.width = '100%';
@@ -659,6 +774,59 @@
         }, 500);
       }, 800);
     }
+
+    // 도움말 모달 연동
+    btnSyncHelp.addEventListener('click', () => {
+      initAudio();
+      playBubblePop();
+      
+      const latest = lottoHistory[0] || { draw_no: 1226, date: "2026-05-30T00:00:00Z" };
+      const currentDraw = getCurrentDrawNo();
+      estimatedNextDrawBadge.textContent = `${currentDraw}회차`;
+      
+      const dateObj = new Date(latest.date);
+      latestDrawDateSpan.textContent = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')} (토요일)`;
+      
+      const now = new Date();
+      currentTimeSpan.textContent = now.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+      
+      syncHelpModal.classList.remove('hidden');
+    });
+
+    const closeSyncHelp = () => {
+      playDeselectPop();
+      syncHelpModal.classList.add('hidden');
+    };
+    
+    btnCloseSyncHelp.addEventListener('click', closeSyncHelp);
+    btnCloseSyncHelpOk.addEventListener('click', closeSyncHelp);
+
+    // 수동 동기화 새로고침
+    btnSyncRefresh.addEventListener('click', async () => {
+      initAudio();
+      playBubblePop();
+      
+      const icon = btnSyncRefresh;
+      icon.innerHTML = '🔄';
+      icon.classList.add('animate-spin');
+      
+      try {
+        const response = await fetch('https://smok95.github.io/lotto/results/all.json');
+        if (!response.ok) throw new Error('API load failed');
+        const rawData = await response.json();
+        lottoHistory = rawData.sort((a, b) => b.draw_no - a.draw_no);
+        updateSyncBanner();
+        
+        showNotification("성공적으로 연동되었습니다! 🔄");
+        playCoinChime();
+      } catch (err) {
+        console.error(err);
+        showNotification("동기화 실패. 네트워크 상태를 확인하세요.");
+        playDefeatChime();
+      } finally {
+        icon.classList.remove('animate-spin');
+      }
+    });
 
     // -------------------------------------------------------------------------
     // 5. 1~45 숫자판 상시 컴팩트 패드 빌드
@@ -684,6 +852,28 @@
     // 6. 번호 선택, 정렬 및 탭 제거 핵심 비즈니스 로직
     // -------------------------------------------------------------------------
     
+    let inlineToastTimeout = null;
+    let inlineToastSubTimeout = null;
+    function showInlineToast(msg, duration = 1200) {
+      if (inlineToastTimeout) clearTimeout(inlineToastTimeout);
+      if (inlineToastSubTimeout) clearTimeout(inlineToastSubTimeout);
+      
+      keypadInlineToast.textContent = msg;
+      keypadInlineToast.style.display = 'flex';
+      // Reflow
+      keypadInlineToast.offsetHeight;
+      keypadInlineToast.classList.remove('opacity-0');
+      keypadInlineToast.classList.add('opacity-100');
+      
+      inlineToastTimeout = setTimeout(() => {
+        keypadInlineToast.classList.remove('opacity-100');
+        keypadInlineToast.classList.add('opacity-0');
+        inlineToastSubTimeout = setTimeout(() => {
+          keypadInlineToast.style.display = 'none';
+        }, 200);
+      }, duration);
+    }
+
     // 번호 선택 토글 (크기 순서 자동 정렬 및 사이값 채우기)
     function toggleNumber(num) {
       const idx = selectedNumbers.indexOf(num);
@@ -691,16 +881,28 @@
       if (idx > -1) {
         // 이미 있으면 취소
         selectedNumbers.splice(idx, 1);
+        
+        // 수동 고정 번호 목록에서도 삭제
+        const mIdx = manualSelectedNumbers.indexOf(num);
+        if (mIdx > -1) {
+          manualSelectedNumbers.splice(mIdx, 1);
+        }
+        
         playDeselectPop();
       } else {
         // 없으면 추가
         if (selectedNumbers.length >= 6) {
           playChiptune(200, 0.15); // 한계 에러음
-          showNotification("번호는 6개까지만 선택할 수 있어요!");
+          showInlineToast("번호는 6개까지만 선택할 수 있어요!");
           return;
         }
         
-        // 오름차순 삽입 및 자동 정렬 보장
+        // 수동 고정 목록에 추가
+        if (!manualSelectedNumbers.includes(num)) {
+          manualSelectedNumbers.push(num);
+          manualSelectedNumbers.sort((a, b) => a - b);
+        }
+        
         selectedNumbers.push(num);
         selectedNumbers.sort((a, b) => a - b);
         playBubblePop();
@@ -730,9 +932,19 @@
         
         if (val !== undefined) {
           const color = getBallColorClass(val);
+          const isManual = manualSelectedNumbers.includes(val);
+          
           const ball = document.createElement('div');
-          ball.className = `lotto-ball ${color} cursor-pointer btn-tap transform active:scale-95`;
+          // 수동 선택 번호는 시각적으로 작고 아기자기한 점이나 강조 테두리를 씌워서 구별(예: 럭키클로버 초록 도트 뱃지)
+          ball.className = `lotto-ball ${color} cursor-pointer btn-tap transform active:scale-95 flex items-center justify-center relative`;
           ball.innerHTML = `<span>${val}</span>`;
+          
+          if (isManual) {
+            // 수동 선택된 번호는 구체 귀퉁이에 작고 예쁜 초록 점 표시
+            const pin = document.createElement('span');
+            pin.className = 'absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-brand-green border border-white animate-pulse';
+            ball.appendChild(pin);
+          }
           
           // [중요] 슬롯 탭 시 제거 및 스무스 인필
           ball.addEventListener('click', () => {
@@ -870,10 +1082,17 @@
     // 8. 100% 무결점 청정 번호 엄선 자동선택기 (자동 / 반자동 모드 지원) 및 리셋
     // -------------------------------------------------------------------------
     btnQuickFill.addEventListener('click', () => {
+      if (manualSelectedNumbers.length === 6) {
+        showInlineToast("수동 선택 번호가 6개 모두 채워져 있습니다.");
+        playChiptune(200, 0.15);
+        return;
+      }
+
       let attempts = 0;
       let cleanCombination = [];
-      const isSemiAuto = selectedNumbers.length > 0 && selectedNumbers.length < 6;
-      const baseNumbers = [...selectedNumbers]; // 수동 지정 번호 고정
+      // 사용자가 직접 고정한 번호들만 고정 기반(Base)으로 둔다
+      const baseNumbers = [...manualSelectedNumbers]; 
+      const isSemiAuto = baseNumbers.length > 0;
       
       // 안전 100% 청정 조합이 나타날 때까지 무한 재루프 연산 (안전장치 10,000회)
       while (attempts < 10000) {
@@ -906,9 +1125,9 @@
         playBubblePop();
         updateCheckerUI();
         if (isSemiAuto) {
-          showNotification("남은 번호를 청정 번호로 채워 반자동 선택했어요! 🍀");
+          showNotification("수동 번호를 고정하고 남은 번호를 청정 번호로 채웠어요! 🍀");
         } else {
-          showNotification("100% 안전한 청정 번호만 쏙 골라 뽑았어요! 🍀");
+          showNotification("100% 안전한 청정 번호만 쏙 골라 새로 뽑았어요! 🍀");
         }
       } else {
         if (isSemiAuto) {
@@ -931,6 +1150,7 @@
 
     btnQuickClear.addEventListener('click', () => {
       selectedNumbers = [];
+      manualSelectedNumbers = [];
       playDeselectPop();
       updateCheckerUI();
     });
@@ -1051,30 +1271,23 @@
           return;
         }
 
-        // 추출된 복수 게임 조합들 중 청정 조합만 엄선하여 일괄 저장 처리
+        // 추출된 복수 게임 조합들을 필터 없이 일괄 저장 처리 (사용자 요청사항 7)
         let savedCount = 0;
-        let contaminatedCount = 0;
 
         parsedGames.forEach(comb => {
-          const { matched1st, matched2nd } = checkCombinationContamination(comb);
-          
-          if (!matched1st && !matched2nd) {
-            // 중복 아닐 때만 저장
-            const isDuplicated = inventory.some(item => {
-              const itemNums = Array.isArray(item) ? item : item.numbers;
-              return itemNums.length === comb.length && itemNums.every((n, i) => n === comb[i]);
-            });
+          // 중복 아닐 때만 저장
+          const isDuplicated = inventory.some(item => {
+            const itemNums = Array.isArray(item) ? item : item.numbers;
+            return itemNums.length === comb.length && itemNums.every((n, i) => n === comb[i]);
+          });
 
-            if (!isDuplicated) {
-              // 스캔된 회차 번호 drawNo를 함께 포함하여 저장
-              inventory.unshift({
-                numbers: comb,
-                draw_no: drawNo
-              });
-              savedCount++;
-            }
-          } else {
-            contaminatedCount++;
+          if (!isDuplicated) {
+            // 스캔된 회차 번호 drawNo를 함께 포함하여 저장
+            inventory.unshift({
+              numbers: comb,
+              draw_no: drawNo
+            });
+            savedCount++;
           }
         });
 
@@ -1085,10 +1298,9 @@
         // 아기자기한 한글 알림 결과 연출
         let alertMsg = `제 ${drawNo}회차 용지 해독 완료! 🎉`;
         if (savedCount > 0) {
-          alertMsg += ` 깨끗한 ${savedCount}개 게임 보관함 저장 완료!`;
-        }
-        if (contaminatedCount > 0) {
-          alertMsg += ` (오염된 ${contaminatedCount}개 게임 제외됨)`;
+          alertMsg += ` ${savedCount}개 게임 보관함 저장 완료!`;
+        } else {
+          alertMsg += ` 이미 모두 보관함에 들어있는 번호들입니다.`;
         }
 
         const toast = document.createElement('div');
@@ -1181,15 +1393,14 @@
       const dateObj = new Date(record.date);
       const dateStr = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
 
-      // 가로 번호 리스트 렌더링
-      // 가로 번호 리스트 렌더링 (폰트 한단계씩 확대 완료)
+      // 가로 번호 리스트 렌더링 (원형 보존 강제)
       let ballsHTML = '';
       record.numbers.forEach(num => {
         const color = getBallColorClass(num);
-        ballsHTML += `<span class="w-8 h-8 rounded-full text-xs font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
+        ballsHTML += `<span class="w-8 h-8 rounded-full aspect-square shrink-0 text-xs font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
       });
       const bColor = getBallColorClass(record.bonus_no);
-      const bonusHTML = `<span class="w-8 h-8 rounded-full text-xs font-outfit font-extrabold flex items-center justify-center text-white ${bColor} shadow-inner">${record.bonus_no}</span>`;
+      const bonusHTML = `<span class="w-8 h-8 rounded-full aspect-square shrink-0 text-xs font-outfit font-extrabold flex items-center justify-center text-white ${bColor} shadow-inner">${record.bonus_no}</span>`;
 
       // 복권점 정보 테이블 렌더링
       const stores = getDeterministicStores(val);
@@ -1230,8 +1441,10 @@
           </div>
 
           <!-- 명당 배출점 -->
-          <div class="flex flex-col gap-2">
-            <span class="text-[10px] text-slate-400 font-noto tracking-wider uppercase font-bold mb-0.5">제 ${record.draw_no}회차 1등 명당 배출처</span>
+          <div class="flex flex-col gap-2.5 mt-1">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+              <span class="text-sm font-bold text-slate-800 font-noto">제 ${record.draw_no}회차 1등 명당 배출처</span>
+            </div>
             <div class="bg-white border border-brand-border rounded-2xl px-3.5 py-1.5 flex flex-col shadow-sm">
               ${storesHTML}
             </div>
@@ -1247,7 +1460,7 @@
       if (selectedNumbers.length !== 6) return;
 
       const comb = [...selectedNumbers];
-      const latestDrawNo = lottoHistory[0] ? lottoHistory[0].draw_no : 1226;
+      const latestDrawNo = getCurrentDrawNo();
 
       // 중복 체크 (객체/배열 형태 모두 호환 가능)
       const isDuplicated = inventory.some(item => {
@@ -1279,15 +1492,18 @@
 
       // 보관 완료 후 번호판 리셋 처리
       selectedNumbers = [];
+      manualSelectedNumbers = []; // 수동 고정도 비운다
       updateCheckerUI();
     });
+
+    let expandedDraws = {}; // 각 회차 그룹 아코디언 토글 상태 관리
 
     function renderInventoryList() {
       const stored = localStorage.getItem('lucky_clover_inventory');
       inventory = stored ? JSON.parse(stored) : [];
 
-      const items = inventoryChipsContainer.querySelectorAll('.lucky-chip');
-      items.forEach(el => el.remove());
+      // 기존 항목 비우기
+      inventoryChipsContainer.innerHTML = '';
 
       if (inventory.length === 0) {
         inventoryEmptyMsg.style.display = 'block';
@@ -1296,62 +1512,126 @@
 
       inventoryEmptyMsg.style.display = 'none';
 
-      inventory.forEach((item, idx) => {
-        // 객체 구조 마이그레이션 호환 처리
+      // 회차별 그룹화
+      const groups = {};
+      inventory.forEach((item, originalIndex) => {
         const comb = Array.isArray(item) ? item : item.numbers;
         const drawNo = Array.isArray(item) ? (lottoHistory[0] ? lottoHistory[0].draw_no : 1226) : item.draw_no;
-        
-        const cardItem = document.createElement('div');
-        cardItem.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-2xl p-3.5 flex justify-between items-center gap-3 transition cursor-pointer relative group';
-        
-        let ballsHTML = '';
-        comb.forEach(num => {
-          const color = getBallColorClass(num);
-          // 볼의 둥글둥글 크기 w-8.5 h-8.5 (약 34px)로 대폭 키움
-          ballsHTML += `<span class="w-[34px] h-[34px] rounded-full text-xs font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner shrink-0">${num}</span>`;
-        });
+        if (!groups[drawNo]) {
+          groups[drawNo] = [];
+        }
+        groups[drawNo].push({ comb, originalIndex });
+      });
 
-        cardItem.innerHTML = `
-          <div class="flex flex-col gap-2 text-left z-10 font-noto">
-            <div class="flex items-center gap-1.5">
-              <span class="text-[9.5px] font-bold text-slate-400 group-hover:text-brand-green tracking-wider transition">
-                <i class="fa-solid fa-microchip"></i> 보존 칩 #${inventory.length - idx}
-              </span>
-              <!-- 회차정보 태그 추가 -->
-              <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-brand-sage text-brand-darkgreen">제 ${drawNo}회차 검증완료</span>
-            </div>
-            <div class="flex gap-1">
-              ${ballsHTML}
-            </div>
+      // 내림차순 정렬된 회차 키 목록
+      const drawNos = Object.keys(groups).map(Number).sort((a, b) => b - a);
+
+      // 아무것도 펼쳐진 게 없는 초기 상태면 최신 회차를 펼침
+      if (drawNos.length > 0 && Object.keys(expandedDraws).length === 0) {
+        expandedDraws[drawNos[0]] = true;
+      }
+
+      drawNos.forEach(drawNo => {
+        const groupItems = groups[drawNo];
+        const isExpanded = !!expandedDraws[drawNo];
+
+        // 아코디언 그룹 박스
+        const groupWrapper = document.createElement('div');
+        groupWrapper.className = 'border border-brand-border bg-slate-50/50 rounded-2xl overflow-hidden flex flex-col p-1 mb-2.5 transition-all';
+
+        // 아코디언 헤더
+        const header = document.createElement('div');
+        header.className = 'flex justify-between items-center py-2.5 px-3 bg-white rounded-xl shadow-sm cursor-pointer transition hover:bg-slate-50 btn-tap';
+        header.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
+            <span class="text-xs font-bold text-slate-700 font-noto">제 ${drawNo}회차 보존 기록</span>
+            <span class="px-1.5 py-0.5 rounded-full text-[8.5px] font-bold bg-brand-sage text-brand-darkgreen font-mono">${groupItems.length}</span>
           </div>
-          <button class="btn-delete-chip w-8 h-8 rounded-lg bg-brand-light border border-brand-border hover:border-rose-450 hover:bg-rose-50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition z-25 shrink-0">
-            <i class="fa-solid fa-trash-can text-xs"></i>
-          </button>
+          <div class="text-slate-400 text-xs">
+            <i class="fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
+          </div>
         `;
 
-        // 보관함 칩 터치 시 즉시 번호체커로 복사 및 장착 UX
-        cardItem.addEventListener('click', (e) => {
-          if (e.target.closest('.btn-delete-chip')) return;
-          
-          selectedNumbers = [...comb];
+        header.addEventListener('click', () => {
           playBubblePop();
-          updateCheckerUI();
-          
-          // 탭을 번호체커로 자동 이동
-          resetNavStyle();
-          tabBtnChecker.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
-          tabContentChecker.classList.remove('hidden');
-
-          showNotification("조합 번호를 번호체커로 장착했어요!");
+          expandedDraws[drawNo] = !expandedDraws[drawNo];
+          renderInventoryList();
         });
 
-        // 삭제 이벤트
-        cardItem.querySelector('.btn-delete-chip').addEventListener('click', (e) => {
-          e.stopPropagation();
-          deleteInventoryChip(idx);
+        groupWrapper.appendChild(header);
+
+        // 아코디언 바디 (접기/펼치기)
+        const body = document.createElement('div');
+        body.className = `flex flex-col gap-2 p-1.5 ${isExpanded ? '' : 'hidden'}`;
+
+        groupItems.forEach(item => {
+          const { comb, originalIndex } = item;
+          const { matched1st, matched2nd } = checkCombinationContamination(comb);
+
+          let badgeHTML = '';
+          if (matched1st) {
+            badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-rose-100 text-rose-500 font-noto">1등 이력</span>`;
+          } else if (matched2nd) {
+            badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-orange-100 text-orange-500 font-noto">2등 이력</span>`;
+          } else {
+            badgeHTML = `<span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-emerald-100 text-brand-darkgreen font-noto">✨ 청정 조합</span>`;
+          }
+
+          const cardItem = document.createElement('div');
+          cardItem.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-xl p-2.5 flex justify-between items-center gap-2.5 transition cursor-pointer relative group';
+
+          let ballsHTML = '';
+          comb.forEach(num => {
+            const color = getBallColorClass(num);
+            ballsHTML += `<span class="w-[30px] h-[30px] rounded-full aspect-square shrink-0 text-[10.5px] font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
+          });
+
+          cardItem.innerHTML = `
+            <div class="flex flex-col gap-1.5 text-left z-10 font-noto">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] font-bold text-slate-400 group-hover:text-brand-green tracking-wider transition">
+                  칩 #${inventory.length - originalIndex}
+                </span>
+                ${badgeHTML}
+              </div>
+              <div class="flex gap-0.5">
+                ${ballsHTML}
+              </div>
+            </div>
+            <button class="btn-delete-chip w-7.5 h-7.5 rounded-lg bg-brand-light border border-brand-border hover:border-rose-450 hover:bg-rose-50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition z-25 shrink-0">
+              <i class="fa-solid fa-trash-can text-[10px]"></i>
+            </button>
+          `;
+
+          // 보관함 칩 터치 시 즉시 번호체커로 복사 및 장착 UX
+          cardItem.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-delete-chip')) return;
+            
+            selectedNumbers = [...comb];
+            manualSelectedNumbers = []; // 불러올 때는 수동 필터 초기화
+            playBubblePop();
+            updateCheckerUI();
+            
+            // 탭을 번호체커로 자동 이동
+            resetNavStyle();
+            tabBtnChecker.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
+            tabContentChecker.classList.remove('hidden');
+
+            showNotification("조합 번호를 번호체커로 장착했어요!");
+          });
+
+          // 삭제 이벤트
+          cardItem.querySelector('.btn-delete-chip').addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteInventoryChip(originalIndex);
+          });
+
+          body.appendChild(cardItem);
         });
 
-        inventoryChipsContainer.appendChild(cardItem);
+        groupWrapper.appendChild(body);
+        inventoryChipsContainer.appendChild(groupWrapper);
       });
     }
 
