@@ -190,14 +190,18 @@
   <main class="app-frame w-full h-screen sm:h-[780px] bg-slate-50 flex flex-col justify-between relative overflow-hidden transition-all duration-500 app-card" id="main-app" style="opacity: 0;">
     
     <!-- App Header Ribbon -->
-    <header class="px-4 py-3.5 bg-white border-b border-brand-border flex justify-between items-center z-10 shrink-0">
-      <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg bg-brand-sage flex items-center justify-center text-brand-green">
-          <i class="fa-solid fa-clover text-sm"></i>
+    <header class="px-4 py-3 bg-white border-b border-brand-border flex justify-between items-center z-10 shrink-0">
+      <div class="flex items-center gap-3">
+        <!-- 네잎클로버 제대로 그린 아기자기한 SVG 일러스트 -->
+        <div class="w-9 h-9 rounded-2xl bg-brand-sage flex items-center justify-center text-brand-green shadow-sm shrink-0">
+          <svg class="w-6 h-6 text-brand-green fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12c-1.5-2.2-4.2-2.8-5.5-1.2-1.3 1.6-.5 4.3 1.8 5.1 1.2-.5 2.8-1.8 3.7-3.9zm0 0c2.2-1.5 2.8-4.2 1.2-5.5-1.6-1.3-4.3-.5-5.1 1.8.5 1.2 1.8 2.8 3.9 3.7zm0 0c1.5 2.2 4.2 2.8 5.5 1.2 1.3-1.6.5-4.3-1.8-5.1-1.2.5-2.8 1.8-3.7 3.9zm0 0c-2.2 1.5-2.8 4.2-1.2 5.5 1.6 1.3 4.3.5 5.1-1.8-.5-1.2-1.8-2.8-3.9-3.7z"/>
+            <path d="M12 12c-.5 3 .5 6.5-1.5 8.5" stroke="#10b981" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
         </div>
         <div>
-          <h1 class="font-noto font-extrabold text-sm tracking-tight text-slate-800">럭키클로버</h1>
-          <p class="text-[9px] text-slate-400 font-medium font-noto">깨끗한 로또 번호 검증</p>
+          <h2 class="font-noto font-extrabold text-[15px] tracking-tight text-slate-800 leading-none">럭키클로버</h2>
+          <p class="text-[10px] text-brand-green font-bold font-noto mt-1">안전한 청정 조합 분석기</p>
         </div>
       </div>
 
@@ -208,7 +212,7 @@
     </header>
 
     <!-- ────────────────────────────────────────── -->
-    <!-- 탭 1: 번호체커 (Checker) -->
+    <!-- 탭 1: 행운분석 (Checker) -->
     <!-- ────────────────────────────────────────── -->
     <div id="tab-content-checker" class="flex-grow flex flex-col justify-between p-4 overflow-y-auto tab-scroll">
       <div class="flex flex-col gap-4">
@@ -234,11 +238,6 @@
             <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
             <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
           </div>
-          
-          <!-- QR 스캐너 연동 탑재 버튼 (0원 평생무료 강조) -->
-          <button id="btn-open-qr" class="btn-tap w-full py-2.5 mt-1 bg-brand-green/10 border border-brand-green/30 hover:bg-brand-green/20 text-brand-darkgreen font-noto text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition">
-            <i class="fa-solid fa-camera"></i> 📷 카메라로 용지 스캔하기
-          </button>
         </div>
 
         <!-- 1~45 컴팩트 아기자기 숫자판 (상시 노출) -->
@@ -302,6 +301,19 @@
     <!-- 탭 3: 내보관함 (Inventory) -->
     <!-- ────────────────────────────────────────── -->
     <div id="tab-content-inventory" class="flex-grow flex flex-col gap-4 p-4 overflow-y-auto tab-scroll hidden">
+      <!-- QR 용지 스캔하기 버튼 및 친절한 안내 배치 -->
+      <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
+        <h3 class="text-xs font-bold text-slate-700 font-noto flex items-center gap-1.5">
+          <i class="fa-solid fa-qrcode text-brand-green"></i> 구매한 용지 등록
+        </h3>
+        <p class="text-[10px] text-slate-400 leading-relaxed font-noto">
+          실제 로또 용지의 QR 코드를 스캔해 보세요! 당첨 역사와 전수 대조를 마친 뒤, 오염되지 않은 <span class="text-brand-green font-bold">안전한 청정 조합들만 골라내어 보관함에 자동으로 한 번에 쏙 저장</span>해 드려요. (서버 전송이 없는 안전한 100% 무료 오프라인 스캔)
+        </p>
+        <button id="btn-open-qr" class="btn-tap w-full py-2.5 bg-brand-green/10 border border-brand-green/30 hover:bg-brand-green/20 text-brand-darkgreen font-noto text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition">
+          용지 QR 스캔하기
+        </button>
+      </div>
+
       <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3 flex-grow">
         <div>
           <h3 class="text-xs font-bold text-slate-700 font-noto flex items-center gap-1.5">
@@ -328,7 +340,7 @@
       <!-- Tab Checker -->
       <button id="tab-btn-checker" class="btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition">
         <i class="fa-solid fa-clover text-lg"></i>
-        <span class="text-[9.5px]">번호체커</span>
+        <span class="text-[9.5px]">행운분석</span>
       </button>
 
       <!-- Tab History -->
@@ -607,6 +619,9 @@
         
         // 직관적인 한글 동기화 상태 노출
         syncBanner.textContent = `제 ${latest.draw_no}회차 데이터 동기화 완료!`;
+        
+        // 회차 입력 placeholder 동적 동기화
+        searchDrawInput.placeholder = `회차 입력 (예: ${latest.draw_no})`;
 
         setTimeout(() => {
           loaderFill.style.width = '100%';
@@ -631,6 +646,9 @@
         { draw_no: 1, numbers: [10, 23, 29, 33, 37, 40], bonus_no: 16, date: "2002-12-07T00:00:00Z" }
       ];
       syncBanner.textContent = `예비 백업 모드 가동 중 (1226회차)`;
+      
+      // 회차 입력 placeholder 백업용 동기화
+      searchDrawInput.placeholder = `회차 입력 (예: 1226)`;
       
       setTimeout(() => {
         loaderFill.style.width = '100%';
@@ -723,18 +741,17 @@
           
           displaySlots.appendChild(ball);
         } else {
-          // 비어있는 점선 원
-          const empty = document.createElement('div');
-          empty.className = 'lotto-ball-empty cursor-pointer btn-tap';
-          empty.innerHTML = `<i class="fa-solid fa-plus text-[10px] animate-pulse"></i>`;
-          
-          // 빈 슬롯 클릭 시 가장 첫 번째 번호 자동 지정해주는 편리한 액티브
+          // 빈 슬롯 클릭 시 1~45 중 중복되지 않는 랜덤 번호 1개 자동 배정 (+ 누를 시 하나씩 랜덤)
           empty.addEventListener('click', () => {
+            const available = [];
             for (let k = 1; k <= 45; k++) {
               if (!selectedNumbers.includes(k)) {
-                toggleNumber(k);
-                break;
+                available.push(k);
               }
+            }
+            if (available.length > 0) {
+              const randomNum = available[Math.floor(Math.random() * available.length)];
+              toggleNumber(randomNum);
             }
           });
           displaySlots.appendChild(empty);
@@ -846,18 +863,25 @@
     }
 
     // -------------------------------------------------------------------------
-    // 8. 100% 무결점 청정 번호 엄선 자동선택기 및 리셋
+    // 8. 100% 무결점 청정 번호 엄선 자동선택기 (자동 / 반자동 모드 지원) 및 리셋
     // -------------------------------------------------------------------------
     btnQuickFill.addEventListener('click', () => {
       let attempts = 0;
       let cleanCombination = [];
+      const isSemiAuto = selectedNumbers.length > 0 && selectedNumbers.length < 6;
+      const baseNumbers = [...selectedNumbers]; // 수동 지정 번호 고정
       
       // 안전 100% 청정 조합이 나타날 때까지 무한 재루프 연산 (안전장치 10,000회)
       while (attempts < 10000) {
         attempts++;
-        const pool = Array.from({ length: 45 }, (_, i) => i + 1);
-        const testComb = [];
-        for (let i = 0; i < 6; i++) {
+        const testComb = [...baseNumbers];
+        
+        // 비어있는 나머지 슬롯 개수만큼 중복되지 않는 난수 추가
+        const pool = Array.from({ length: 45 }, (_, i) => i + 1).filter(n => !testComb.includes(n));
+        const needCount = 6 - testComb.length;
+        
+        for (let i = 0; i < needCount; i++) {
+          if (pool.length === 0) break;
           const rIdx = Math.floor(Math.random() * pool.length);
           testComb.push(pool.splice(rIdx, 1)[0]);
         }
@@ -866,7 +890,7 @@
         // 1등 및 2등 이력과 대조
         const { matched1st, matched2nd } = checkCombinationContamination(testComb);
         
-        // 단 하나도 매치되지 않았다면 완벽한 청정 조합 당첨!
+        // 단 하나도 매치되지 않았다면 완벽한 청정 조합 완성!
         if (!matched1st && !matched2nd) {
           cleanCombination = testComb;
           break;
@@ -877,18 +901,27 @@
         selectedNumbers = cleanCombination;
         playBubblePop();
         updateCheckerUI();
-        showNotification("100% 안전한 청정 번호만 쏙 골라 뽑았어요! 🍀");
-      } else {
-        // 백업 무작위 추출
-        showNotification("청정 번호 연산 한계 초과로 기본 자동 선택을 진행해요.");
-        const pool = Array.from({ length: 45 }, (_, i) => i + 1);
-        const backup = [];
-        for (let i = 0; i < 6; i++) {
-          const rIdx = Math.floor(Math.random() * pool.length);
-          backup.push(pool.splice(rIdx, 1)[0]);
+        if (isSemiAuto) {
+          showNotification("남은 번호를 청정 번호로 채워 반자동 선택했어요! 🍀");
+        } else {
+          showNotification("100% 안전한 청정 번호만 쏙 골라 뽑았어요! 🍀");
         }
-        selectedNumbers = backup.sort((a,b)=>a-b);
-        updateCheckerUI();
+      } else {
+        if (isSemiAuto) {
+          showNotification("수동 번호 간섭으로 청정 생성이 어려워요. 번호를 조금 수정해 주세요!");
+          playDefeatChime();
+        } else {
+          // 백업 무작위 추출
+          showNotification("청정 번호 연산 한계 초과로 기본 자동 선택을 진행해요.");
+          const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+          const backup = [];
+          for (let i = 0; i < 6; i++) {
+            const rIdx = Math.floor(Math.random() * pool.length);
+            backup.push(pool.splice(rIdx, 1)[0]);
+          }
+          selectedNumbers = backup.sort((a,b)=>a-b);
+          updateCheckerUI();
+        }
       }
     });
 
@@ -1023,12 +1056,17 @@
           
           if (!matched1st && !matched2nd) {
             // 중복 아닐 때만 저장
-            const isDuplicated = inventory.some(item => 
-              item.length === comb.length && item.every((n, i) => n === comb[i])
-            );
+            const isDuplicated = inventory.some(item => {
+              const itemNums = Array.isArray(item) ? item : item.numbers;
+              return itemNums.length === comb.length && itemNums.every((n, i) => n === comb[i]);
+            });
 
             if (!isDuplicated) {
-              inventory.unshift(comb);
+              // 스캔된 회차 번호 drawNo를 함께 포함하여 저장
+              inventory.unshift({
+                numbers: comb,
+                draw_no: drawNo
+              });
               savedCount++;
             }
           } else {
@@ -1140,28 +1178,29 @@
       const dateStr = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
 
       // 가로 번호 리스트 렌더링
+      // 가로 번호 리스트 렌더링 (폰트 한단계씩 확대 완료)
       let ballsHTML = '';
       record.numbers.forEach(num => {
         const color = getBallColorClass(num);
-        ballsHTML += `<span class="w-7 h-7 rounded-full text-[10px] font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
+        ballsHTML += `<span class="w-8 h-8 rounded-full text-xs font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
       });
       const bColor = getBallColorClass(record.bonus_no);
-      const bonusHTML = `<span class="w-7 h-7 rounded-full text-[10px] font-outfit font-extrabold flex items-center justify-center text-white ${bColor} shadow-inner">${record.bonus_no}</span>`;
+      const bonusHTML = `<span class="w-8 h-8 rounded-full text-xs font-outfit font-extrabold flex items-center justify-center text-white ${bColor} shadow-inner">${record.bonus_no}</span>`;
 
       // 복권점 정보 테이블 렌더링
       const stores = getDeterministicStores(val);
       let storesHTML = '';
       stores.forEach(st => {
         let badge = '';
-        if (st.method === '자동') badge = '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-emerald-100 text-brand-darkgreen font-noto">자동</span>';
-        else if (st.method === '수동') badge = '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-rose-100 text-rose-500 font-noto">수동</span>';
-        else badge = '<span class="px-1 py-0.5 rounded text-[8px] font-bold bg-yellow-100 text-amber-600 font-noto">반자동</span>';
+        if (st.method === '자동') badge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-brand-darkgreen font-noto">자동</span>';
+        else if (st.method === '수동') badge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-500 font-noto">수동</span>';
+        else badge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-100 text-amber-600 font-noto">반자동</span>';
 
         storesHTML += `
-          <div class="flex justify-between items-center py-2 border-b border-slate-200/50 last:border-b-0 text-[10.5px]">
-            <div class="flex flex-col gap-0.5 text-left font-noto">
-              <span class="text-slate-700 font-bold">${st.name}</span>
-              <span class="text-slate-400 text-[9.5px]">${st.address}</span>
+          <div class="flex justify-between items-center py-2.5 border-b border-slate-200/50 last:border-b-0 text-[12px]">
+            <div class="flex flex-col gap-1 text-left font-noto">
+              <span class="text-slate-800 font-bold text-[13px]">${st.name}</span>
+              <span class="text-slate-500 text-[11px]">${st.address}</span>
             </div>
             <div>${badge}</div>
           </div>
@@ -1169,27 +1208,27 @@
       });
 
       searchResultDisplay.innerHTML = `
-        <div class="flex flex-col gap-4 text-left animate-fadeIn">
+        <div class="flex flex-col gap-4.5 text-left animate-fadeIn">
           <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-            <span class="text-xs font-bold text-slate-800 font-noto">제 ${record.draw_no}회차 당첨 정보</span>
-            <span class="text-[10px] text-slate-400 font-mono">${dateStr} 추첨</span>
+            <span class="text-sm font-bold text-slate-800 font-noto">제 ${record.draw_no}회차 당첨 정보</span>
+            <span class="text-xs text-slate-400 font-mono">${dateStr} 추첨</span>
           </div>
 
           <!-- 번호 그리드 -->
-          <div class="flex flex-col gap-2 bg-white border border-brand-border rounded-2xl p-3 shadow-sm">
-            <span class="text-[9px] text-slate-400 font-noto tracking-wider uppercase font-bold">당첨 번호 배열</span>
-            <div class="flex items-center gap-1">
+          <div class="flex flex-col gap-2.5 bg-white border border-brand-border rounded-2xl p-3.5 shadow-sm">
+            <span class="text-[10px] text-slate-400 font-noto tracking-wider uppercase font-bold">당첨 번호 배열</span>
+            <div class="flex items-center gap-1.5">
               ${ballsHTML}
-              <i class="fa-solid fa-plus text-slate-300 text-[8px] mx-1"></i>
+              <i class="fa-solid fa-plus text-slate-300 text-[9px] mx-1"></i>
               ${bonusHTML}
-              <span class="text-[9px] text-slate-400 ml-1 font-noto">보너스</span>
+              <span class="text-[10px] text-slate-400 ml-1 font-noto">보너스</span>
             </div>
           </div>
 
           <!-- 명당 배출점 -->
-          <div class="flex flex-col gap-1.5">
-            <span class="text-[9px] text-slate-400 font-noto tracking-wider uppercase font-bold mb-0.5">제 ${record.draw_no}회차 1등 명당 배출처</span>
-            <div class="bg-white border border-brand-border rounded-2xl px-3 py-1 flex flex-col shadow-sm">
+          <div class="flex flex-col gap-2">
+            <span class="text-[10px] text-slate-400 font-noto tracking-wider uppercase font-bold mb-0.5">제 ${record.draw_no}회차 1등 명당 배출처</span>
+            <div class="bg-white border border-brand-border rounded-2xl px-3.5 py-1.5 flex flex-col shadow-sm">
               ${storesHTML}
             </div>
           </div>
@@ -1204,11 +1243,13 @@
       if (selectedNumbers.length !== 6) return;
 
       const comb = [...selectedNumbers];
+      const latestDrawNo = lottoHistory[0] ? lottoHistory[0].draw_no : 1226;
 
-      // 중복 체크
-      const isDuplicated = inventory.some(item => 
-        item.length === comb.length && item.every((n, i) => n === comb[i])
-      );
+      // 중복 체크 (객체/배열 형태 모두 호환 가능)
+      const isDuplicated = inventory.some(item => {
+        const itemNums = Array.isArray(item) ? item : item.numbers;
+        return itemNums.length === comb.length && itemNums.every((n, i) => n === comb[i]);
+      });
 
       if (isDuplicated) {
         playChiptune(220, 0.2);
@@ -1216,7 +1257,11 @@
         return;
       }
 
-      inventory.unshift(comb);
+      // 회차 번호 정보를 포함하는 객체형으로 보관
+      inventory.unshift({
+        numbers: comb,
+        draw_no: latestDrawNo
+      });
       localStorage.setItem('lucky_clover_inventory', JSON.stringify(inventory));
       
       playCoinChime();
@@ -1247,32 +1292,41 @@
 
       inventoryEmptyMsg.style.display = 'none';
 
-      inventory.forEach((comb, idx) => {
-        const item = document.createElement('div');
-        item.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-2xl p-3 flex justify-between items-center gap-3 transition cursor-pointer relative group';
+      inventory.forEach((item, idx) => {
+        // 객체 구조 마이그레이션 호환 처리
+        const comb = Array.isArray(item) ? item : item.numbers;
+        const drawNo = Array.isArray(item) ? (lottoHistory[0] ? lottoHistory[0].draw_no : 1226) : item.draw_no;
+        
+        const cardItem = document.createElement('div');
+        cardItem.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-2xl p-3.5 flex justify-between items-center gap-3 transition cursor-pointer relative group';
         
         let ballsHTML = '';
         comb.forEach(num => {
           const color = getBallColorClass(num);
-          ballsHTML += `<span class="w-6 h-6 rounded-full text-[9px] font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner">${num}</span>`;
+          // 볼의 둥글둥글 크기 w-8.5 h-8.5 (약 34px)로 대폭 키움
+          ballsHTML += `<span class="w-[34px] h-[34px] rounded-full text-xs font-outfit font-extrabold flex items-center justify-center text-white ${color} shadow-inner shrink-0">${num}</span>`;
         });
 
-        item.innerHTML = `
-          <div class="flex flex-col gap-1.5 text-left z-10 font-noto">
-            <span class="text-[8px] font-bold text-slate-400 group-hover:text-brand-green tracking-wider transition">
-              <i class="fa-solid fa-microchip"></i> 보존 칩 #${inventory.length - idx}
-            </span>
-            <div class="flex gap-0.5">
+        cardItem.innerHTML = `
+          <div class="flex flex-col gap-2 text-left z-10 font-noto">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[9.5px] font-bold text-slate-400 group-hover:text-brand-green tracking-wider transition">
+                <i class="fa-solid fa-microchip"></i> 보존 칩 #${inventory.length - idx}
+              </span>
+              <!-- 회차정보 태그 추가 -->
+              <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-brand-sage text-brand-darkgreen">제 ${drawNo}회차 검증완료</span>
+            </div>
+            <div class="flex gap-1">
               ${ballsHTML}
             </div>
           </div>
-          <button class="btn-delete-chip w-7 h-7 rounded-lg bg-brand-light border border-brand-border hover:border-rose-450 hover:bg-rose-50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition z-25">
-            <i class="fa-solid fa-trash-can text-[10px]"></i>
+          <button class="btn-delete-chip w-8 h-8 rounded-lg bg-brand-light border border-brand-border hover:border-rose-450 hover:bg-rose-50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition z-25 shrink-0">
+            <i class="fa-solid fa-trash-can text-xs"></i>
           </button>
         `;
 
         // 보관함 칩 터치 시 즉시 번호체커로 복사 및 장착 UX
-        item.addEventListener('click', (e) => {
+        cardItem.addEventListener('click', (e) => {
           if (e.target.closest('.btn-delete-chip')) return;
           
           selectedNumbers = [...comb];
@@ -1288,12 +1342,12 @@
         });
 
         // 삭제 이벤트
-        item.querySelector('.btn-delete-chip').addEventListener('click', (e) => {
+        cardItem.querySelector('.btn-delete-chip').addEventListener('click', (e) => {
           e.stopPropagation();
           deleteInventoryChip(idx);
         });
 
-        inventoryChipsContainer.appendChild(item);
+        inventoryChipsContainer.appendChild(cardItem);
       });
     }
 
