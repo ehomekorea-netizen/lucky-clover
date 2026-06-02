@@ -362,8 +362,19 @@
       <!-- Scanner camera viewfinder box -->
       <div class="w-48 h-48 mx-auto bg-slate-900 border-2 border-brand-green rounded-3xl overflow-hidden relative shadow-2xl flex items-center justify-center">
         <div id="qr-reader" class="w-full h-full bg-slate-950"></div>
+        <!-- 100% 무결한 정사각형 모서리 조준 가이드라인 (기기 비율 버그 원천 방어) -->
+        <div class="absolute w-28 h-28 border-2 border-white/30 rounded-2xl pointer-events-none z-10 flex flex-col justify-between p-2">
+          <div class="flex justify-between">
+            <div class="w-3.5 h-3.5 border-t-[3.5px] border-l-[3.5px] border-white rounded-tl-md"></div>
+            <div class="w-3.5 h-3.5 border-t-[3.5px] border-r-[3.5px] border-white rounded-tr-md"></div>
+          </div>
+          <div class="flex justify-between">
+            <div class="w-3.5 h-3.5 border-b-[3.5px] border-l-[3.5px] border-white rounded-bl-md"></div>
+            <div class="w-3.5 h-3.5 border-b-[3.5px] border-r-[3.5px] border-white rounded-br-md"></div>
+          </div>
+        </div>
         <!-- Scan line overlay -->
-        <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand-green/70 shadow-[0_0_8px_#10b981] animate-pulse pointer-events-none"></div>
+        <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand-green/70 shadow-[0_0_8px_#10b981] animate-pulse pointer-events-none z-20"></div>
       </div>
 
       <!-- Scanner guidance info -->
@@ -902,8 +913,7 @@
       html5QrcodeScanner = new Html5Qrcode("qr-reader");
       
       const config = { 
-        fps: 10, 
-        qrbox: { width: 140, height: 140 } 
+        fps: 10
       };
 
       // 모바일 후면 카메라(environment) 우선 활성화
