@@ -742,6 +742,10 @@
           displaySlots.appendChild(ball);
         } else {
           // 빈 슬롯 클릭 시 1~45 중 중복되지 않는 랜덤 번호 1개 자동 배정 (+ 누를 시 하나씩 랜덤)
+          const empty = document.createElement('div');
+          empty.className = 'lotto-ball-empty cursor-pointer btn-tap';
+          empty.innerHTML = `<i class="fa-solid fa-plus text-[10px] animate-pulse"></i>`;
+          
           empty.addEventListener('click', () => {
             const available = [];
             for (let k = 1; k <= 45; k++) {
