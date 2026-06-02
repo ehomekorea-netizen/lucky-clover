@@ -191,29 +191,9 @@
     
     <!-- App Header Ribbon -->
     <header class="px-4 py-4.5 bg-white border-b border-brand-border flex flex-col items-center justify-center relative z-10 shrink-0">
-      <div class="flex flex-col items-center gap-1.5 text-center">
-        <!-- 네잎클로버 제대로 그린 아기자기한 SVG 일러스트 -->
-        <div class="w-11 h-11 rounded-2xl bg-brand-sage flex items-center justify-center text-brand-green shadow-sm shrink-0">
-          <svg class="w-8 h-8 text-brand-green fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <!-- 4개의 하트형 잎사귀 -->
-            <!-- 상단 잎 -->
-            <path d="M12 12 C12 8.5, 9 6, 9 8.5 C9 10.5, 11 11.5, 12 12" fill="#10b981"/>
-            <path d="M12 12 C12 8.5, 15 6, 15 8.5 C15 10.5, 13 11.5, 12 12" fill="#10b981"/>
-            <!-- 우측 잎 -->
-            <path d="M12 12 C15.5 12, 18 9, 15.5 9 C13.5 9, 12.5 11, 12 12" fill="#10b981"/>
-            <path d="M12 12 C15.5 12, 18 15, 15.5 15 C13.5 15, 12.5 13, 12 12" fill="#10b981"/>
-            <!-- 하단 잎 -->
-            <path d="M12 12 C12 15.5, 15 18, 15 15.5 C15 13.5, 13 12.5, 12 12" fill="#10b981"/>
-            <path d="M12 12 C12 15.5, 9 18, 9 15.5 C9 13.5, 11 12.5, 12 12" fill="#10b981"/>
-            <!-- 좌측 잎 -->
-            <path d="M12 12 C8.5 12, 6 15, 6 12.5 C6 10.5, 8 9.5, 12 12" fill="#10b981"/>
-            <path d="M12 12 C8.5 12, 6 9, 6 9.5 C6 11.5, 8 12.5, 12 12" fill="#10b981"/>
-            <!-- 줄기 -->
-            <path d="M12 12 C12.5 15, 14 18, 13 21" stroke="#047857" stroke-width="2" stroke-linecap="round" fill="none"/>
-          </svg>
-        </div>
+      <div class="flex flex-col items-center gap-1 text-center">
         <div>
-          <h2 class="font-noto font-black text-[20px] tracking-tight text-slate-800 leading-none">럭키클로버</h2>
+          <h2 class="font-noto font-black text-[20px] tracking-tight text-slate-800 leading-none">🍀 럭키클로버</h2>
           <p class="text-[11px] text-brand-green font-black font-noto mt-1.5">안전한 청정 조합 분석기</p>
         </div>
       </div>
@@ -231,7 +211,7 @@
       <div class="flex flex-col gap-4">
         <!-- 동기화 정보 가벼운 리본 -->
         <div class="p-2.5 bg-brand-sage rounded-2xl flex items-center justify-between gap-2 text-[10.5px] text-brand-darkgreen font-medium font-noto relative">
-          <div class="flex items-center gap-1.5 overflow-hidden">
+          <div class="flex items-center gap-1.5 overflow-hidden pl-2.5">
             <span class="w-1.5 h-1.5 rounded-full bg-brand-green animate-ping shrink-0"></span>
             <span id="sync-banner" class="truncate font-semibold">최신 데이터 확인 중...</span>
           </div>
@@ -248,8 +228,10 @@
         <!-- 6개 숫자 슬롯 디스플레이 (탭하면 제거 & 인필 슬라이드) -->
         <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
           <div class="flex justify-between items-center px-1">
-            <span class="text-[11px] font-bold text-slate-400 font-noto">확인할 번호</span>
-            <span class="text-[10px] text-slate-400 font-mono" id="checker-counter">0 / 6 선택됨</span>
+            <span class="text-[11px] font-bold text-slate-400 font-noto shrink-0">확인할 번호</span>
+            <!-- 번호 입력 피드백 인라인 토스트 (1초 노출) -->
+            <div id="checker-header-toast" class="text-[9.5px] font-bold text-rose-500 font-noto opacity-0 transition-opacity duration-150 truncate max-w-[150px]" style="display: none;"></div>
+            <span class="text-[10px] text-slate-400 font-mono shrink-0" id="checker-counter">0 / 6 선택됨</span>
           </div>
 
           <div class="flex justify-around items-center bg-slate-50 border border-slate-100 rounded-2xl py-3 px-1 min-h-[64px]" id="display-slots">
@@ -273,9 +255,6 @@
               <button id="btn-quick-clear" class="btn-tap text-[10px] font-bold text-slate-400 hover:underline">비우기</button>
             </div>
           </div>
-
-          <!-- 번호 키패드 인라인 토스트 (자동선택과 그리드 사이에 위치) -->
-          <div id="keypad-inline-toast" class="h-6 flex items-center justify-center text-[10.5px] font-bold text-rose-500 font-noto opacity-0 transition-all duration-200 bg-rose-50/70 border border-rose-100 rounded-xl" style="display: none;"></div>
 
           <div class="grid grid-cols-7 gap-1.5 p-1 bg-slate-50 rounded-2xl border border-slate-100" id="checker-grid-keypad">
             <!-- 1~45 keypad buttons generated dynamics -->
@@ -332,12 +311,12 @@
         <h3 class="text-xs font-bold text-slate-700 font-noto flex items-center gap-1.5">
           <i class="fa-solid fa-qrcode text-brand-green"></i> 구매한 용지 등록
         </h3>
-        <p class="text-[10px] text-slate-400 leading-relaxed font-noto">
-          판매점에서 구입한 실물 복권 용지(자동/반자동/수동)의 QR 코드를 스캔해 보세요! A~E열 전체 조합(5개든 4개든)의 번호 기록을 한 번에 가져와 보관함에 온전히 담아 보관해 줍니다. (서버 전송이 없는 안전한 100% 무료 오프라인 스캔)
-        </p>
         <button id="btn-open-qr" class="btn-tap w-full py-2.5 bg-brand-green/10 border border-brand-green/30 hover:bg-brand-green/20 text-brand-darkgreen font-noto text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition">
           용지 QR 스캔하기
         </button>
+        <p class="text-[10px] text-slate-400 leading-relaxed font-noto">
+          구매한 실물 복권 용지의 QR스캔을 통해 번호 기록을 한번에 가져와 보관함에 보관해줍니다. (서버 전송이 없는 안전한 100% 무료 오프라인 스캔)
+        </p>
       </div>
 
       <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3 flex-grow">
@@ -361,6 +340,12 @@
     <!-- ────────────────────────────────────────── -->
     <!-- 📱 BOTTOM NAVIGATION TAB BAR -->
     <!-- ────────────────────────────────────────── -->
+    <!-- 드래그 삭제 드롭존 (평소에는 translate-y 및 hidden 상태) -->
+    <div id="drag-delete-zone" class="absolute bottom-[57px] left-0 right-0 h-[64px] bg-rose-500/90 text-white font-noto font-bold text-xs flex items-center justify-center gap-2 border-t border-rose-600 transition-all duration-300 transform translate-y-[64px] opacity-0 z-30" style="display: none;">
+      <i class="fa-solid fa-trash-can animate-pulse text-sm"></i>
+      <span>이곳에 놓아서 보존기록 삭제 🗑️</span>
+    </div>
+
     <nav class="bg-white border-t border-brand-border px-3 py-2.5 flex justify-around items-center shrink-0 z-10">
       
       <!-- Tab Checker -->
@@ -615,7 +600,7 @@
     const btnQuickClear = document.getElementById('btn-quick-clear');
     const checkerGridKeypad = document.getElementById('checker-grid-keypad');
     const btnOpenQr = document.getElementById('btn-open-qr');
-    const keypadInlineToast = document.getElementById('keypad-inline-toast');
+    const checkerHeaderToast = document.getElementById('checker-header-toast');
     
     const unifiedActionCard = document.getElementById('unified-action-card');
     const unifiedStatusText = document.getElementById('unified-status-text');
@@ -712,9 +697,8 @@
 
     function updateSyncBanner() {
       if (lottoHistory.length === 0) return;
-      const latest = lottoHistory[0];
       const currentDrawNo = getCurrentDrawNo();
-      syncBanner.innerHTML = `현재 <strong class="text-brand-darkgreen">${currentDrawNo}회차</strong> 진행 중 <span class="text-slate-400 font-normal font-sans">(서버: ${latest.draw_no}회차)</span>`;
+      syncBanner.innerHTML = `현재 <strong class="text-brand-darkgreen">${currentDrawNo}회차</strong> 진행 중`;
       searchDrawInput.placeholder = `회차 입력 (예: ${currentDrawNo})`;
     }
 
@@ -854,23 +838,24 @@
     
     let inlineToastTimeout = null;
     let inlineToastSubTimeout = null;
-    function showInlineToast(msg, duration = 1200) {
+    function showInlineToast(msg, duration = 1000) {
+      if (!checkerHeaderToast) return;
       if (inlineToastTimeout) clearTimeout(inlineToastTimeout);
       if (inlineToastSubTimeout) clearTimeout(inlineToastSubTimeout);
       
-      keypadInlineToast.textContent = msg;
-      keypadInlineToast.style.display = 'flex';
+      checkerHeaderToast.textContent = msg;
+      checkerHeaderToast.style.display = 'block';
       // Reflow
-      keypadInlineToast.offsetHeight;
-      keypadInlineToast.classList.remove('opacity-0');
-      keypadInlineToast.classList.add('opacity-100');
+      checkerHeaderToast.offsetHeight;
+      checkerHeaderToast.classList.remove('opacity-0');
+      checkerHeaderToast.classList.add('opacity-100');
       
       inlineToastTimeout = setTimeout(() => {
-        keypadInlineToast.classList.remove('opacity-100');
-        keypadInlineToast.classList.add('opacity-0');
+        checkerHeaderToast.classList.remove('opacity-100');
+        checkerHeaderToast.classList.add('opacity-0');
         inlineToastSubTimeout = setTimeout(() => {
-          keypadInlineToast.style.display = 'none';
-        }, 200);
+          checkerHeaderToast.style.display = 'none';
+        }, 150);
       }, duration);
     }
 
@@ -1082,10 +1067,9 @@
     // 8. 100% 무결점 청정 번호 엄선 자동선택기 (자동 / 반자동 모드 지원) 및 리셋
     // -------------------------------------------------------------------------
     btnQuickFill.addEventListener('click', () => {
-      if (manualSelectedNumbers.length === 6) {
-        showInlineToast("수동 선택 번호가 6개 모두 채워져 있습니다.");
-        playChiptune(200, 0.15);
-        return;
+      if (selectedNumbers.length === 6) {
+        // 번호가 가득 찬 상태에서 클릭하면 수동 고정을 풀고 다시 한번 6개 전체를 랜덤배정
+        manualSelectedNumbers = [];
       }
 
       let attempts = 0;
@@ -1436,7 +1420,6 @@
               ${ballsHTML}
               <i class="fa-solid fa-plus text-slate-300 text-[9px] mx-1"></i>
               ${bonusHTML}
-              <span class="text-[10px] text-slate-400 ml-1 font-noto">보너스</span>
             </div>
           </div>
 
@@ -1496,7 +1479,192 @@
       updateCheckerUI();
     });
 
-    let expandedDraws = {}; // 각 회차 그룹 아코디언 토글 상태 관리
+    // -------------------------------------------------------------------------
+    // Pointer Drag & Drop 삭제 시스템 글로벌 상태
+    // -------------------------------------------------------------------------
+    let dragActive = false;
+    let dragTimeout = null;
+    let dragTargetInfo = null; // { type: 'group'|'chip', id: drawNo|originalIndex, el: HTMLElement }
+    let dragClone = null;
+    let startX = 0, startY = 0;
+    const dragDeleteZone = document.getElementById('drag-delete-zone');
+
+    function bindPointerDragEvent(el, type, id) {
+      el.style.touchAction = 'none'; // 터치 기본 스크롤 동작 방지 (드래그 시 렉 최소화)
+      
+      el.addEventListener('pointerdown', (e) => {
+        // 좌클릭/터치만 허용
+        if (e.button !== 0) return;
+        
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        // 280ms 롱프레스 타이머 시동
+        dragTimeout = setTimeout(() => {
+          startDrag(e, type, id, el);
+        }, 280);
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!dragActive) {
+          // 살짝만 움직여도 롱프레스 대기 취소
+          const diffX = Math.abs(e.clientX - startX);
+          const diffY = Math.abs(e.clientY - startY);
+          if (diffX > 6 || diffY > 6) {
+            clearTimeout(dragTimeout);
+          }
+        }
+      });
+
+      // 롱프레스 대기 중 손가락 뗌/취소 시 타이머 해제
+      ['pointerup', 'pointercancel'].forEach(evt => {
+        el.addEventListener(evt, () => {
+          clearTimeout(dragTimeout);
+        });
+      });
+    }
+
+    function startDrag(e, type, id, el) {
+      dragActive = true;
+      dragTargetInfo = { type, id, el };
+
+      // 햅틱 진동 피드백
+      if (navigator.vibrate) {
+        navigator.vibrate(40);
+      }
+
+      // 하단 쓰레기통 드롭존 등장 연출
+      dragDeleteZone.style.display = 'flex';
+      dragDeleteZone.offsetHeight; // Reflow
+      dragDeleteZone.classList.remove('translate-y-[64px]', 'opacity-0');
+      dragDeleteZone.classList.add('translate-y-0', 'opacity-100');
+
+      // 마우스/손가락을 따라다닐 부유용 복제 클론 생성
+      dragClone = el.cloneNode(true);
+      dragClone.style.position = 'fixed';
+      dragClone.style.pointerEvents = 'none';
+      dragClone.style.zIndex = '9999';
+      dragClone.style.width = el.offsetWidth + 'px';
+      dragClone.style.height = el.offsetHeight + 'px';
+      
+      // 터치한 상대 좌표를 감안하여 클론 초기 위치 정밀 맵핑
+      const rect = el.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      
+      dragClone.style.left = (e.clientX - offsetX) + 'px';
+      dragClone.style.top = (e.clientY - offsetY) + 'px';
+      
+      // 둥실 뜨는 Toy 3D 스타일 변형 효과
+      dragClone.style.transform = 'scale(1.05) rotate(1.2deg)';
+      dragClone.style.boxShadow = '0 20px 35px -5px rgba(0,0,0,0.18)';
+      dragClone.style.opacity = '0.9';
+      dragClone.style.transition = 'none';
+      document.body.appendChild(dragClone);
+
+      // 드래그 중인 원본 엘리먼트는 투명하게 처리
+      el.style.opacity = '0.3';
+
+      // 윈도우 전역 리스너 바인딩 (부드러운 주행 보증)
+      window.addEventListener('pointermove', onGlobalPointerMove);
+      window.addEventListener('pointerup', onGlobalPointerUp);
+    }
+
+    function onGlobalPointerMove(e) {
+      if (!dragActive || !dragClone) return;
+
+      const rect = dragTargetInfo.el.getBoundingClientRect();
+      // 손가락/마우스 중심점을 기준으로 클론 이동
+      dragClone.style.left = (e.clientX - dragClone.offsetWidth / 2) + 'px';
+      dragClone.style.top = (e.clientY - dragClone.offsetHeight / 2) + 'px';
+
+      // 드롭존 영역 내부 진입 여부 실시간 연산
+      const zoneRect = dragDeleteZone.getBoundingClientRect();
+      const isOverZone = (
+        e.clientY >= zoneRect.top &&
+        e.clientX >= zoneRect.left &&
+        e.clientX <= zoneRect.right
+      );
+
+      if (isOverZone) {
+        dragDeleteZone.classList.add('bg-rose-600');
+        dragDeleteZone.classList.remove('bg-rose-500/90');
+        dragClone.style.transform = 'scale(0.88) rotate(0deg)';
+        dragClone.style.opacity = '0.5';
+      } else {
+        dragDeleteZone.classList.remove('bg-rose-600');
+        dragDeleteZone.classList.add('bg-rose-500/90');
+        dragClone.style.transform = 'scale(1.05) rotate(1.2deg)';
+        dragClone.style.opacity = '0.9';
+      }
+    }
+
+    function onGlobalPointerUp(e) {
+      if (!dragActive) return;
+
+      const zoneRect = dragDeleteZone.getBoundingClientRect();
+      const isOverZone = (
+        e.clientY >= zoneRect.top &&
+        e.clientX >= zoneRect.left &&
+        e.clientX <= zoneRect.right
+      );
+
+      // 원본 엘리먼트 불투명도 원복
+      if (dragTargetInfo && dragTargetInfo.el) {
+        dragTargetInfo.el.style.opacity = '1';
+      }
+
+      if (isOverZone) {
+        // 드롭 성공 -> 삭제 실행
+        executeDragDeletion(dragTargetInfo);
+        playDeselectPop();
+      } else {
+        // 드롭 실패 -> 튕기며 제자리 복귀 사운드
+        playChiptune(300, 0.08);
+      }
+
+      // 클론 제거
+      if (dragClone) {
+        dragClone.remove();
+        dragClone = null;
+      }
+
+      // 드롭존 닫기 슬라이드
+      dragDeleteZone.classList.remove('translate-y-0', 'opacity-100');
+      dragDeleteZone.classList.add('translate-y-[64px]', 'opacity-0');
+      setTimeout(() => {
+        dragDeleteZone.style.display = 'none';
+      }, 300);
+
+      // 전역 리스너 청소
+      window.removeEventListener('pointermove', onGlobalPointerMove);
+      window.removeEventListener('pointerup', onGlobalPointerUp);
+
+      dragActive = false;
+      dragTargetInfo = null;
+    }
+
+    function executeDragDeletion(info) {
+      const stored = localStorage.getItem('lucky_clover_inventory');
+      let currentInv = stored ? JSON.parse(stored) : [];
+
+      if (info.type === 'group') {
+        // 그룹 전체(회차 데이터 전체) 삭제
+        currentInv = currentInv.filter(item => {
+          const itemDrawNo = Array.isArray(item) ? (lottoHistory[0] ? lottoHistory[0].draw_no : 1226) : item.draw_no;
+          return itemDrawNo !== info.id;
+        });
+        localStorage.setItem('lucky_clover_inventory', JSON.stringify(currentInv));
+        showNotification(`제 ${info.id}회차 기록이 통째로 삭제되었습니다. 🗑️`);
+      } else if (info.type === 'chip') {
+        // 개별 칩 하나 삭제
+        currentInv.splice(info.id, 1);
+        localStorage.setItem('lucky_clover_inventory', JSON.stringify(currentInv));
+        showNotification(`안전 조합 번호 칩이 삭제되었습니다. 🗑️`);
+      }
+
+      renderInventoryList();
+    }
 
     function renderInventoryList() {
       const stored = localStorage.getItem('lucky_clover_inventory');
@@ -1537,7 +1705,7 @@
 
         // 아코디언 그룹 박스
         const groupWrapper = document.createElement('div');
-        groupWrapper.className = 'border border-brand-border bg-slate-50/50 rounded-2xl overflow-hidden flex flex-col p-1 mb-2.5 transition-all';
+        groupWrapper.className = 'border border-brand-border bg-slate-50/50 rounded-2xl overflow-hidden flex flex-col p-1 mb-2.5 transition-all select-none';
 
         // 아코디언 헤더
         const header = document.createElement('div');
@@ -1545,7 +1713,7 @@
         header.innerHTML = `
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
-            <span class="text-xs font-bold text-slate-700 font-noto">제 ${drawNo}회차 보존 기록</span>
+            <span class="text-xs font-bold text-slate-700 font-noto">제 ${drawNo}회차 보관 기록</span>
             <span class="px-1.5 py-0.5 rounded-full text-[8.5px] font-bold bg-brand-sage text-brand-darkgreen font-mono">${groupItems.length}</span>
           </div>
           <div class="text-slate-400 text-xs">
@@ -1553,11 +1721,15 @@
           </div>
         `;
 
-        header.addEventListener('click', () => {
-          playBubblePop();
+        // 단순 탭 시 아코디언 토글 (롱프레스 시에는 Pointer API가 채감)
+        header.addEventListener('click', (e) => {
+          if (dragActive) return;
           expandedDraws[drawNo] = !expandedDraws[drawNo];
           renderInventoryList();
         });
+
+        // 꾹 누르면 삭제하는 이벤트 등록
+        bindPointerDragEvent(header, 'group', drawNo);
 
         groupWrapper.appendChild(header);
 
@@ -1579,7 +1751,7 @@
           }
 
           const cardItem = document.createElement('div');
-          cardItem.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-xl p-2.5 flex justify-between items-center gap-2.5 transition cursor-pointer relative group';
+          cardItem.className = 'lucky-chip bg-white border border-brand-border hover:border-brand-green/50 rounded-xl p-2.5 flex justify-between items-center gap-2.5 transition cursor-pointer relative group select-none';
 
           let ballsHTML = '';
           comb.forEach(num => {
@@ -1599,33 +1771,11 @@
                 ${ballsHTML}
               </div>
             </div>
-            <button class="btn-delete-chip w-7.5 h-7.5 rounded-lg bg-brand-light border border-brand-border hover:border-rose-450 hover:bg-rose-50 text-slate-400 hover:text-rose-500 flex items-center justify-center transition z-25 shrink-0">
-              <i class="fa-solid fa-trash-can text-[10px]"></i>
-            </button>
           `;
 
-          // 보관함 칩 터치 시 즉시 번호체커로 복사 및 장착 UX
-          cardItem.addEventListener('click', (e) => {
-            if (e.target.closest('.btn-delete-chip')) return;
-            
-            selectedNumbers = [...comb];
-            manualSelectedNumbers = []; // 불러올 때는 수동 필터 초기화
-            playBubblePop();
-            updateCheckerUI();
-            
-            // 탭을 번호체커로 자동 이동
-            resetNavStyle();
-            tabBtnChecker.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
-            tabContentChecker.classList.remove('hidden');
-
-            showNotification("조합 번호를 번호체커로 장착했어요!");
-          });
-
-          // 삭제 이벤트
-          cardItem.querySelector('.btn-delete-chip').addEventListener('click', (e) => {
-            e.stopPropagation();
-            deleteInventoryChip(originalIndex);
-          });
+          // 단순 클릭 시 탭 이동 복사 기능 삭제 (사용자 요청사항 9)
+          // 꾹 누르면 삭제하는 이벤트 등록
+          bindPointerDragEvent(cardItem, 'chip', originalIndex);
 
           body.appendChild(cardItem);
         });
@@ -1633,13 +1783,6 @@
         groupWrapper.appendChild(body);
         inventoryChipsContainer.appendChild(groupWrapper);
       });
-    }
-
-    function deleteInventoryChip(idx) {
-      inventory.splice(idx, 1);
-      localStorage.setItem('lucky_clover_inventory', JSON.stringify(inventory));
-      playDeselectPop();
-      renderInventoryList();
     }
 
     // -------------------------------------------------------------------------
