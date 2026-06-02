@@ -229,8 +229,6 @@
         <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
           <div class="flex justify-between items-center px-1">
             <span class="text-[11px] font-bold text-slate-400 font-noto shrink-0">확인할 번호</span>
-            <!-- 번호 입력 피드백 인라인 토스트 (1초 노출) -->
-            <div id="checker-header-toast" class="text-[9.5px] font-bold text-rose-500 font-noto opacity-0 transition-opacity duration-150 truncate max-w-[150px]" style="display: none;"></div>
             <span class="text-[10px] text-slate-400 font-mono shrink-0" id="checker-counter">0 / 6 선택됨</span>
           </div>
 
@@ -244,6 +242,9 @@
             <div class="lotto-ball-empty cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></div>
           </div>
         </div>
+
+        <!-- 확인할 번호 박스와 번호 선택판 박스 사이 인라인 토스트 배너 (숫자를 가리지 않는 크기) -->
+        <div id="checker-middle-toast" class="h-8 flex items-center justify-center text-[11px] font-bold text-brand-darkgreen font-noto opacity-0 transition-all duration-200 bg-brand-sage border border-brand-green/20 rounded-2xl mx-1" style="display: none;"></div>
 
         <!-- 1~45 컴팩트 아기자기 숫자판 (상시 노출) -->
         <div class="bg-white border border-brand-border rounded-3xl p-4 shadow-sm flex flex-col gap-3">
@@ -312,7 +313,7 @@
           <i class="fa-solid fa-qrcode text-brand-green"></i> 구매한 용지 등록
         </h3>
         <button id="btn-open-qr" class="btn-tap w-full py-2.5 bg-brand-green/10 border border-brand-green/30 hover:bg-brand-green/20 text-brand-darkgreen font-noto text-xs font-bold rounded-2xl flex items-center justify-center gap-1.5 transition">
-          용지 QR 스캔하기
+          <i class="fa-solid fa-camera text-[11px] text-brand-darkgreen/80"></i> 용지 QR 스캔하기
         </button>
         <p class="text-[10px] text-slate-400 leading-relaxed font-noto">
           구매한 실물 복권 용지의 QR스캔을 통해 번호 기록을 한번에 가져와 보관함에 보관해줍니다. (서버 전송이 없는 안전한 100% 무료 오프라인 스캔)
@@ -551,6 +552,11 @@
     let inventory = [];
     let html5QrcodeScanner = null; // Scanner handle
 
+    function loadInventoryFromStorage() {
+      const stored = localStorage.getItem('lucky_clover_inventory');
+      inventory = stored ? JSON.parse(stored) : [];
+    }
+
     // 대한민국 로또 대표 명당 DB
     const FAMOUS_STORES = [
       { name: "스파", address: "서울 노원구 한글비석로 19" },
@@ -600,7 +606,7 @@
     const btnQuickClear = document.getElementById('btn-quick-clear');
     const checkerGridKeypad = document.getElementById('checker-grid-keypad');
     const btnOpenQr = document.getElementById('btn-open-qr');
-    const checkerHeaderToast = document.getElementById('checker-header-toast');
+    const checkerMiddleToast = document.getElementById('checker-middle-toast');
     
     const unifiedActionCard = document.getElementById('unified-action-card');
     const unifiedStatusText = document.getElementById('unified-status-text');
@@ -838,24 +844,24 @@
     
     let inlineToastTimeout = null;
     let inlineToastSubTimeout = null;
-    function showInlineToast(msg, duration = 1000) {
-      if (!checkerHeaderToast) return;
+    function showInlineToast(msg, duration = 1200) {
+      if (!checkerMiddleToast) return;
       if (inlineToastTimeout) clearTimeout(inlineToastTimeout);
       if (inlineToastSubTimeout) clearTimeout(inlineToastSubTimeout);
       
-      checkerHeaderToast.textContent = msg;
-      checkerHeaderToast.style.display = 'block';
+      checkerMiddleToast.textContent = msg;
+      checkerMiddleToast.style.display = 'flex';
       // Reflow
-      checkerHeaderToast.offsetHeight;
-      checkerHeaderToast.classList.remove('opacity-0');
-      checkerHeaderToast.classList.add('opacity-100');
+      checkerMiddleToast.offsetHeight;
+      checkerMiddleToast.classList.remove('opacity-0');
+      checkerMiddleToast.classList.add('opacity-100');
       
       inlineToastTimeout = setTimeout(() => {
-        checkerHeaderToast.classList.remove('opacity-100');
-        checkerHeaderToast.classList.add('opacity-0');
+        checkerMiddleToast.classList.remove('opacity-100');
+        checkerMiddleToast.classList.add('opacity-0');
         inlineToastSubTimeout = setTimeout(() => {
-          checkerHeaderToast.style.display = 'none';
-        }, 150);
+          checkerMiddleToast.style.display = 'none';
+        }, 200);
       }, duration);
     }
 
@@ -1203,10 +1209,15 @@
       console.log("QR Scanned Text:", decodedText);
       stopQRScanner();
       qrScannerOverlay.classList.add('hidden');
+      loadInventoryFromStorage(); // 실시간 저장소 정보 동기화
 
       try {
-        let qrUrl = new URL(decodedText);
-        let v = qrUrl.searchParams.get('v');
+        let cleanText = decodedText.trim();
+        let v = null;
+        const vMatch = cleanText.match(/[?&]v=([^&#\s]+)/);
+        if (vMatch) {
+          v = vMatch[1];
+        }
 
         if (!v) {
           showNotification("올바른 로또용지 QR코드가 아니에요!");
@@ -1442,6 +1453,7 @@
     btnSaveCombination.addEventListener('click', () => {
       if (selectedNumbers.length !== 6) return;
 
+      loadInventoryFromStorage(); // 실시간으로 저장소 정보 동기화
       const comb = [...selectedNumbers];
       const latestDrawNo = getCurrentDrawNo();
 
@@ -1789,6 +1801,14 @@
     // 12. 유틸리티 경고 토스트 피드백
     // -------------------------------------------------------------------------
     function showNotification(msg) {
+      if (tabContentChecker && !tabContentChecker.classList.contains('hidden')) {
+        showInlineToast(msg, 1200);
+      } else {
+        showGlobalToast(msg);
+      }
+    }
+
+    function showGlobalToast(msg) {
       const old = document.getElementById('lucky-toast');
       if (old) old.remove();
 
@@ -1823,6 +1843,7 @@
     // -------------------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
       attachSoundTrigger();
+      loadInventoryFromStorage(); // 스토리지 보관 데이터 초기 동기화
       buildCompactGridKeypad();
       updateCheckerUI();
       loadLottoData();
