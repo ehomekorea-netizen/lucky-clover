@@ -679,6 +679,7 @@
     // -------------------------------------------------------------------------
     // KST 시간 기반 차기 회차 추정 엔진
     function getCurrentDrawNo() {
+      return 1228; // 임시 모의 테스트용 강제 1228회차 적용
       if (lottoHistory.length === 0) return 1227; // 기본 폴백값
       
       const latest = lottoHistory[0];
@@ -731,6 +732,7 @@
         
         // 내림차순 정렬
         lottoHistory = rawData.sort((a, b) => b.draw_no - a.draw_no);
+        lottoHistory.unshift({ draw_no: 1227, numbers: [1, 2, 3, 4, 5, 6], bonus_no: 45, date: "2026-06-06T00:00:00Z" });
         loaderFill.style.width = '95%';
         
         updateSyncBanner();
@@ -1931,6 +1933,11 @@
     // -------------------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
       attachSoundTrigger();
+      // 임시 모의 테스트용 강제 로컬 스토리지 적재
+      localStorage.setItem('lucky_clover_inventory', JSON.stringify([
+        { numbers: [1, 2, 3, 4, 5, 6], draw_no: 1227 },
+        { numbers: [7, 8, 9, 10, 11, 12], draw_no: 1227 }
+      ]));
       loadInventoryFromStorage(); // 스토리지 보관 데이터 초기 동기화
       buildCompactGridKeypad();
       updateCheckerUI();
