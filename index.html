@@ -331,7 +331,7 @@
         </div>
 
         <!-- Inventory List -->
-        <div class="flex flex-col gap-2 max-h-[460px] overflow-y-auto tab-scroll" id="inventory-chips-container">
+        <div class="flex flex-col gap-2" id="inventory-chips-container">
           <div id="inventory-empty-msg" class="text-center text-xs text-slate-400 py-10 font-noto">
             <i class="fa-solid fa-folder-open text-2xl mb-1 text-slate-300 block"></i>
             보관된 조합이 없어요.
@@ -1265,9 +1265,8 @@
 
         // 추출된 복수 게임 조합들을 필터 없이 일괄 저장 처리
         let savedCount = 0;
-        const reversedGames = [...parsedGames].reverse();
 
-        reversedGames.forEach(comb => {
+        parsedGames.forEach(comb => {
           // 중복 아닐 때만 저장 (Null-safe 방어 조치 포함)
           const isDuplicated = inventory.some(item => {
             if (!item) return false;
@@ -1277,7 +1276,7 @@
 
           if (!isDuplicated) {
             // 스캔된 회차 번호 drawNo를 함께 포함하여 저장
-            inventory.unshift({
+            inventory.push({
               numbers: comb,
               draw_no: drawNo
             });
@@ -1310,7 +1309,7 @@
         resetNavStyle();
         tabBtnInventory.className = "btn-tap flex flex-col items-center gap-1 text-brand-green font-noto font-bold transition";
         tabContentInventory.classList.remove('hidden');
-        renderInventoryList();
+        renderInventoryList(true);
 
       } catch (err) {
         console.error("QR Parse Error", err);
@@ -1510,7 +1509,7 @@
       }
 
       // 회차 번호 정보를 포함하는 객체형으로 보관
-      inventory.unshift({
+      inventory.push({
         numbers: comb,
         draw_no: latestDrawNo
       });
@@ -1529,7 +1528,7 @@
       selectedNumbers = [];
       manualSelectedNumbers = []; // 수동 고정도 비운다
       updateCheckerUI();
-      renderInventoryList();
+      renderInventoryList(true);
     });
 
     // -------------------------------------------------------------------------
@@ -1718,7 +1717,7 @@
       renderInventoryList();
     }
 
-    function renderInventoryList() {
+    function renderInventoryList(scrollToBottom = false) {
       const stored = localStorage.getItem('lucky_clover_inventory');
       inventory = stored ? JSON.parse(stored) : [];
 
@@ -1815,7 +1814,7 @@
             <div class="flex flex-col gap-1.5 text-left z-10 font-noto">
               <div class="flex items-center gap-1.5">
                 <span class="text-[9px] font-bold text-slate-400 group-hover:text-brand-green tracking-wider transition">
-                  번호 #${inventory.length - originalIndex}
+                  번호 #${originalIndex + 1}
                 </span>
                 ${badgeHTML}
               </div>
@@ -1835,6 +1834,12 @@
         groupWrapper.appendChild(body);
         inventoryChipsContainer.appendChild(groupWrapper);
       });
+
+      if (scrollToBottom) {
+        setTimeout(() => {
+          tabContentInventory.scrollTop = tabContentInventory.scrollHeight;
+        }, 100);
+      }
     }
 
     // -------------------------------------------------------------------------
