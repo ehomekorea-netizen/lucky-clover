@@ -945,27 +945,33 @@
           return;
         }
 
-        // 동행복권 URL 형식: ?v=1226m040613172628m111213141516...
-        const parts = v.split('m');
-        const drawNo = parseInt(parts[0]); // 1226회차
-        
-        if (isNaN(drawNo)) {
+        // 동행복권 URL 형식 예: ?v=1227m010203040506q070809101112...
+        // 1. 문자열 시작 부분의 연속된 숫자를 통해 회차 번호 추출
+        const drawNoMatch = v.match(/^\d+/);
+        if (!drawNoMatch) {
           showNotification("스캔된 QR 코드 형식이 부적절합니다.");
+          playDefeatChime();
+          return;
+        }
+        const drawNo = parseInt(drawNoMatch[0]);
+
+        // 2. 임의의 소문자 구분자(m, q, n 등)에 관계없이 12자리 연속 숫자를 글로벌 매칭으로 다 추출
+        const gameMatches = v.match(/\d{12}/g);
+        if (!gameMatches || gameMatches.length === 0) {
+          showNotification("해독 가능한 게임 조합이 없어요.");
+          playDefeatChime();
           return;
         }
 
         const parsedGames = [];
-        for (let i = 1; i < parts.length; i++) {
-          const gameStr = parts[i];
-          if (gameStr.length === 12) {
-            const nums = [];
-            for (let j = 0; j < 12; j += 2) {
-              nums.push(parseInt(gameStr.substr(j, 2)));
-            }
-            nums.sort((a, b) => a - b);
-            parsedGames.push(nums);
+        gameMatches.forEach(gameStr => {
+          const nums = [];
+          for (let j = 0; j < 12; j += 2) {
+            nums.push(parseInt(gameStr.substr(j, 2)));
           }
-        }
+          nums.sort((a, b) => a - b);
+          parsedGames.push(nums);
+        });
 
         if (parsedGames.length === 0) {
           showNotification("해독 가능한 게임 조합이 없어요.");
