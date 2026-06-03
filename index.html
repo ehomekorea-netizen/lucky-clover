@@ -561,6 +561,8 @@
     let manualSelectedNumbers = []; // 사용자가 키패드에서 직접 손으로 터치하여 고정한 수동 번호
     let inventory = [];
     let html5QrcodeScanner = null; // Scanner handle
+    let qrScanStarting = false;
+    let qrScanShouldStop = false;
     let lastValidatedCombination = '';
     let expandedDraws = {};
 
@@ -1161,7 +1163,7 @@
     });
 
     btnCloseQr.addEventListener('click', () => {
-      playCancelSound();
+      playDeselectPop();
       qrScannerOverlay.classList.add('hidden'); // 모달 UI는 예외 없이 즉각 강제 종료 처리
       
       // 카메라 리소스 해제는 백그라운드에서 예외 안전 보장 격리 처리
@@ -1175,6 +1177,9 @@
     });
 
     function startQRScanner() {
+      qrScanStarting = true;
+      qrScanShouldStop = false;
+      
       // 스캐너 인스턴스 초기화 (기기 내부에서 자체 해독 동작)
       html5QrcodeScanner = new Html5Qrcode("qr-reader");
       
@@ -1188,7 +1193,14 @@
         config, 
         onQrScanSuccess, 
         onQrScanFailure
-      ).catch(err => {
+      ).then(() => {
+        qrScanStarting = false;
+        // 만약 카메라가 켜지는 도중에 사용자가 닫기(X)를 눌렀다면 즉시 종료 시도
+        if (qrScanShouldStop) {
+          stopQRScanner();
+        }
+      }).catch(err => {
+        qrScanStarting = false;
         console.error("Camera start failed", err);
         showNotification("카메라 권한을 확인해 주세요.");
         qrScannerOverlay.classList.add('hidden');
@@ -1196,13 +1208,24 @@
     }
 
     function stopQRScanner() {
+      if (qrScanStarting) {
+        // 아직 카메라 구동 중인 경우, 켜진 직후 꺼지도록 예약
+        qrScanShouldStop = true;
+        return;
+      }
+
       if (html5QrcodeScanner) {
-        // 현재 스캔이 정상 작동 중일 때만 정지 명령 시도
         const scannerRef = html5QrcodeScanner;
         html5QrcodeScanner = null; // 메모리 락 즉시 해제
 
         if (scannerRef.isScanning) {
-          scannerRef.stop().catch(err => {
+          scannerRef.stop().then(() => {
+            try {
+              scannerRef.clear();
+            } catch (clearErr) {
+              console.error("Camera clear error", clearErr);
+            }
+          }).catch(err => {
             console.error("Camera stop error", err);
           });
         }
